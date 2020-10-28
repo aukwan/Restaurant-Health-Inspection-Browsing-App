@@ -3,6 +3,7 @@ package com.cmpt276.group16.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
         registerClickCallback();
         populateListView();
     }
-    @Override
-    protected void onResume(){
-        super.onResume();
-        registerClickCallback();
-        populateListView();
-
-    }
+    //In case in the future he wants us to manually add a restaurant in the software
+//    @Override
+//    protected void onResume(){
+//        super.onResume();
+//        registerClickCallback();
+//        populateListView();
+//
+//    }
     //TODO: remove after implementing csv file reader  --------------------------------------------
     //SIMPLE ADDING OF THE RESTAURANTS -- DEBUGGING PURPOSES
     private void DEBUG_TEST_POPULATE(){
@@ -98,6 +100,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    //shared preference
+    private void saveRestaurantIndex(int restaurantIndex){
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("Restaurant List - Index", restaurantIndex);
+        editor.apply();
+    }
+
     //LISTVIEW BUTTONS
     private void registerClickCallback() {
 
@@ -106,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = RestaurantUI.makeIntent(MainActivity.this, position);
+                saveRestaurantIndex(position);
+                Intent intent = new Intent(MainActivity.this, RestaurantUI.class);
                 startActivity(intent);
             }
         });

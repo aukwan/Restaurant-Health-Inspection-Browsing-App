@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/criticalIssues"
+        android:id="@+id/criticalIssuesListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
@@ -17,22 +17,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/nonCriticalIssues"
+        android:id="@+id/nonCriticalIssuesListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginTop="12dp"
         android:text="@string/non_critical_issues"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/criticalIssues" />
+        app:layout_constraintTop_toBottomOf="@+id/criticalIssuesListView" />
 
     <TextView
-        android:id="@+id/inspectionDate"
+        android:id="@+id/inspectionDateListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginTop="16dp"
         android:text="@string/inspection_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nonCriticalIssues" />
+        app:layout_constraintTop_toBottomOf="@+id/nonCriticalIssuesListView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

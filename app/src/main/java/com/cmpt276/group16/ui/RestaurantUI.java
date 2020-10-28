@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
@@ -28,12 +28,21 @@ public class RestaurantUI extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_u_i);
-        extractDataFromIntent();
+        extractDataFromSharedPref();
         setupTextViews();
-
         populateListView();
         registerClickCallback();
     }
+    //In case in the future he wants us to manually add a restaurant in the software
+//    @Override
+//    protected void onResume(){
+//        super.onResume();
+//        extractDataFromSharedPref();
+//        setupTextViews();
+//        populateListView();
+//        registerClickCallback();
+//
+//    }
 
     //setup the textview for UI
     private void setupTextViews(){
@@ -50,16 +59,11 @@ public class RestaurantUI extends AppCompatActivity {
         textView.setText(restaurantGPS);
     }
 
-    //make intent to know the position in which restaurant was chosen
-    public static Intent makeIntent(Context context, int value) {
-        Intent intent = new Intent(context, RestaurantUI.class);
-        intent.putExtra("Restaurant List - Index", value);
-        return intent;
-    }
-    //Extract intent data
-    private void extractDataFromIntent() {
-        Intent intent = getIntent();
-        restaurantIndex = intent.getIntExtra("Restaurant List - Index", 0);
+
+    //Extract data from shared pref
+    private void extractDataFromSharedPref() {
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        restaurantIndex = prefs.getInt("Restaurant List - Index", 0);
     }
 
 
@@ -87,15 +91,23 @@ public class RestaurantUI extends AppCompatActivity {
             String numCrit = "Critical issues#: " + Integer.toString(currentIssues.getNumCritical());
             String numNonCrit = "Non - Critical issues#: " + Integer.toString(currentIssues.getNumNonCritical());
             String inspectDate = "Inspection Date: " + Integer.toString(currentIssues.getInspectionDate());
-            TextView textView  = (TextView) itemView.findViewById(R.id.criticalIssues);
+            TextView textView  = (TextView) itemView.findViewById(R.id.criticalIssuesListView);
             textView.setText(numCrit);
-            textView  = (TextView) itemView.findViewById(R.id.nonCriticalIssues);
+            textView  = (TextView) itemView.findViewById(R.id.nonCriticalIssuesListView);
             textView.setText(numNonCrit);
-            textView  = (TextView) itemView.findViewById(R.id.inspectionDate);
+            textView  = (TextView) itemView.findViewById(R.id.inspectionDateListView);
             textView.setText(inspectDate);
             return itemView;
         }
 
+    }
+
+    //shared preference
+    private void saveIssueIndex(int issueIndex){
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("Issue List - Index", issueIndex);
+        editor.apply();
     }
     //LISTVIEW BUTTONS
     private void registerClickCallback() {
@@ -105,8 +117,9 @@ public class RestaurantUI extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = RestaurantUI.makeIntent(MainActivity.this, position);
-//                startActivity(intent);
+                saveIssueIndex(position);
+                Intent intent = new Intent(RestaurantUI.this, IssuesUI.class);
+                startActivity(intent);
             }
         });
 

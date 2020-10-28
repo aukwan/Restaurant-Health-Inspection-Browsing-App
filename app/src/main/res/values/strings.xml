@@ -6,4 +6,5 @@
     <string name="critical_issues">critical issues</string>
     <string name="non_critical_issues">non-critical issues</string>
     <string name="inspection_date">inspection Date</string>
+    <string name="inspection_routine">inspection Routine</string>
 </resources>
