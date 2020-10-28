@@ -48,4 +48,6 @@ public class Restaurant {
     public Double getLongitude(){
         return longitude;
     }
+
+    public ArrayList<Issues> getIssuesList(){return issuesList;}
 }
