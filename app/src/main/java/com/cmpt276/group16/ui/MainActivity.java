@@ -33,34 +33,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //TODO: remove after csv file reader implemented
         readRestaurantData();
-       // DEBUG_TEST_POPULATE();
-        ///////////////////////////////////////////////
-
         registerClickCallback();
         populateListView();
     }
 
+    private String formatString(String unformatted){
+        return unformatted.substring(1,unformatted.length()-1);
+    }
+
+    //READ CSV FILE
     private void readRestaurantData() {
         InputStream is= getResources().openRawResource(R.raw.restaurants_itr1);
         BufferedReader reader= new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8)
         );
-
+        try {
+            reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String line="";
-            try {
-                if (((line=reader.readLine())!=null)){
-                    String[] tokens=line.split(",");
-                    Restaurant sample=new Restaurant(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],
-                            Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
-                    restaurantManager.addRestaurant(sample);
-                }
-            } catch (IOException e) {
-                Log.wtf("MainActivity","Error reading datafile on line"+line,e);
-                e.printStackTrace();
+        try {
+            while (((line=reader.readLine())!=null)){
+                String[] tokens=line.split(",");
+                Restaurant sample=new Restaurant(formatString(tokens[0]),formatString(tokens[1]),formatString(tokens[2]),formatString(tokens[3]),
+                        formatString(tokens[4]), Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
+                restaurantManager.addRestaurant(sample);
             }
+        } catch (IOException e) {
+            Log.wtf("MainActivity","Error reading datafile on line"+line,e);
+            e.printStackTrace();
+        }
     }
 
     //In case in the future he wants us to manually add a restaurant in the software
@@ -71,39 +75,6 @@ public class MainActivity extends AppCompatActivity {
 //        populateListView();
 //
 //    }
-    //TODO: remove after implementing csv file reader  --------------------------------------------
-    //SIMPLE ADDING OF THE RESTAURANTS -- DEBUGGING PURPOSES
-   /* private void DEBUG_TEST_POPULATE(){
-        String trackingNumber = "SDFO-8HKP7E";
-        String name = "Pattullo A&W";
-        String physicalAddress = "12808 King George Blvd";
-        String physicalCity = "Surrey";
-        String facType = "Restaurant";
-        Double latitude = 49.20611;
-        Double longitude = -122.867;
-        Restaurant restaurantTest = new Restaurant(trackingNumber, name, physicalAddress, physicalCity, facType, latitude, longitude);
-        restaurantManager.addRestaurant(restaurantTest);
-
-        int inspectionDate = 20191002;
-        String inspectionType = "Routine";
-        int NumCritical = 0;
-        int NumNonCritical = 0;
-        String hazardRated = "Low";
-        Issues issue1 = new Issues(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
-        restaurantManager.addIssues(issue1);
-
-        inspectionDate = 20181024;
-        inspectionType = "Follow-Up";
-        NumCritical = 0;
-        NumNonCritical = 1;
-        hazardRated = "Low";
-        Issues issue2 = new Issues(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
-        restaurantManager.addIssues(issue2);
-
-    }
-    */
-    //-------------------------------------------------------------------------------------------------
-
     //POPULATES THE LIST VIEW
     private void populateListView() {
         adapter = new MyListAdapter();
@@ -121,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             if (itemView == null){
                 itemView = getLayoutInflater().inflate(R.layout.restaurantlistview, parent, false);
             }
-            Restaurant currentRestaurant = restaurantManager.getRestArray().get(position);
+            Restaurant currentRestaurant = restaurantManager.getRestaurant(position);
             //TODO: add an image id for the restaurants (can be taken randomly)
             // ImageView imageView = (ImageView) itemView.findViewById(R.id.imageItems) - imageItems is the id for the imageview in restaurantlistview
             // imageView.setImageResource(currentRestaurant.getDrawable)

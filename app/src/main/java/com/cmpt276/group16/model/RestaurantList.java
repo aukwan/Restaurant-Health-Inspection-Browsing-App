@@ -22,7 +22,9 @@ public class RestaurantList implements Iterable<Restaurant>{
         restaurantsList.add(res);
         Collections.sort(restaurantsList);
     }
-    public ArrayList<Restaurant> getRestArray(){ return restaurantsList;
+    public ArrayList<Restaurant> getRestArray(){
+        ArrayList<Restaurant> RESTAURANTLIST= new ArrayList<>(restaurantsList);
+        return RESTAURANTLIST;
     }
     public Restaurant getRestaurant(int index){
         return restaurantsList.get(index);
