@@ -3,6 +3,7 @@ package com.cmpt276.group16.model;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class RestaurantList implements Iterable<Restaurant>{
@@ -19,6 +20,7 @@ public class RestaurantList implements Iterable<Restaurant>{
 
     public void addRestaurant(Restaurant res){
         restaurantsList.add(res);
+        Collections.sort(restaurantsList);
     }
     public ArrayList<Restaurant> getRestArray(){ return restaurantsList;
     }

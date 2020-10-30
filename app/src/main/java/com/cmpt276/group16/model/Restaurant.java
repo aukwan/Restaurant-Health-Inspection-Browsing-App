@@ -1,8 +1,9 @@
 package com.cmpt276.group16.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant> {
     private String trackingNumber;
     private String name;
     private String physicalAddress;
@@ -39,7 +40,7 @@ public class Restaurant {
     public String getPhysicalCity(){
         return physicalCity;
     }
-    public String getFactype(){
+    public String getFacType(){
         return facType;
     }
     public Double getLatitude(){
@@ -50,4 +51,17 @@ public class Restaurant {
     }
 
     public ArrayList<Issues> getIssuesList(){return issuesList;}
+
+    @Override
+    public int compareTo(Restaurant o) {
+        return Comparators.name.compare(this, o);
+    }
+    public static class Comparators{
+        public static Comparator<Restaurant> name=new Comparator<Restaurant>() {
+            @Override
+            public int compare(Restaurant o1, Restaurant o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        };
+    }
 }

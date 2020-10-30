@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,6 +18,13 @@ import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 public class MainActivity extends AppCompatActivity {
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
@@ -27,12 +35,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //TODO: remove after csv file reader implemented
-        DEBUG_TEST_POPULATE();
+        readRestaurantData();
+       // DEBUG_TEST_POPULATE();
         ///////////////////////////////////////////////
 
         registerClickCallback();
         populateListView();
     }
+
+    private void readRestaurantData() {
+        InputStream is= getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader reader= new BufferedReader(
+                new InputStreamReader(is, StandardCharsets.UTF_8)
+        );
+
+        String line="";
+            try {
+                if (((line=reader.readLine())!=null)){
+                    String[] tokens=line.split(",");
+                    Restaurant sample=new Restaurant(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],
+                            Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
+                    restaurantManager.addRestaurant(sample);
+                }
+            } catch (IOException e) {
+                Log.wtf("MainActivity","Error reading datafile on line"+line,e);
+                e.printStackTrace();
+            }
+    }
+
     //In case in the future he wants us to manually add a restaurant in the software
 //    @Override
 //    protected void onResume(){
@@ -43,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 //    }
     //TODO: remove after implementing csv file reader  --------------------------------------------
     //SIMPLE ADDING OF THE RESTAURANTS -- DEBUGGING PURPOSES
-    private void DEBUG_TEST_POPULATE(){
+   /* private void DEBUG_TEST_POPULATE(){
         String trackingNumber = "SDFO-8HKP7E";
         String name = "Pattullo A&W";
         String physicalAddress = "12808 King George Blvd";
@@ -71,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         restaurantManager.addIssues(issue2);
 
     }
+    */
     //-------------------------------------------------------------------------------------------------
 
     //POPULATES THE LIST VIEW
