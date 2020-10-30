@@ -2,7 +2,6 @@ package com.cmpt276.group16.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,8 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmpt276.group16.R;
-import com.cmpt276.group16.model.Issues;
-import com.cmpt276.group16.model.Restaurant;
+import com.cmpt276.group16.model.Inspection;
 import com.cmpt276.group16.model.RestaurantList;
 
 
@@ -23,7 +21,7 @@ import com.cmpt276.group16.model.RestaurantList;
 public class RestaurantUI extends AppCompatActivity {
     private int restaurantIndex;
     private RestaurantList restaurantManager = RestaurantList.getInstance();
-    private ArrayAdapter<Issues> adapter;
+    private ArrayAdapter<Inspection> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +73,9 @@ public class RestaurantUI extends AppCompatActivity {
 
     }
     //ADAPTER
-    private class MyListAdapter extends ArrayAdapter<Issues>{
+    private class MyListAdapter extends ArrayAdapter<Inspection>{
         public MyListAdapter() {
-            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getIssuesList());
+            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getInspectionList());
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
@@ -85,12 +83,12 @@ public class RestaurantUI extends AppCompatActivity {
             if (itemView == null){
                 itemView = getLayoutInflater().inflate(R.layout.issueslistview, parent, false);
             }
-            Issues currentIssues = restaurantManager.getRestArray().get(restaurantIndex).getIssuesList().get(position);
+            Inspection currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getInspectionList().get(position);
             //TODO: add icons for hazard level, and other stuff
 
-            String numCrit = "Critical issues#: " + Integer.toString(currentIssues.getNumCritical());
-            String numNonCrit = "Non - Critical issues#: " + Integer.toString(currentIssues.getNumNonCritical());
-            String inspectDate = "Inspection Date: " + Integer.toString(currentIssues.getInspectionDate());
+            String numCrit = "Critical issues#: " + Integer.toString(currentInspection.getNumCritical());
+            String numNonCrit = "Non - Critical issues#: " + Integer.toString(currentInspection.getNumNonCritical());
+            String inspectDate = "Inspection Date: " + Integer.toString(currentInspection.getInspectionDate());
             TextView textView  = (TextView) itemView.findViewById(R.id.criticalIssuesListView);
             textView.setText(numCrit);
             textView  = (TextView) itemView.findViewById(R.id.nonCriticalIssuesListView);
@@ -118,7 +116,7 @@ public class RestaurantUI extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 saveIssueIndex(position);
-                Intent intent = new Intent(RestaurantUI.this, IssuesUI.class);
+                Intent intent = new Intent(RestaurantUI.this, InspectionUI.class);
                 startActivity(intent);
             }
         });

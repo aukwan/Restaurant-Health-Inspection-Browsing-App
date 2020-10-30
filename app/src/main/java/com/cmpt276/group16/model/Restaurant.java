@@ -12,7 +12,7 @@ public class Restaurant {
     private Double longitude;
     //TODO: add a drawable - drawn out randomly?
     //private int drawableIndex
-    private ArrayList<Issues> issuesList = new ArrayList<>();
+    private ArrayList<Inspection> inspectionList = new ArrayList<>();
 
     public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude){
         this.trackingNumber = trackingNumber;
@@ -23,8 +23,8 @@ public class Restaurant {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    public void addIssue(Issues issue){
-        issuesList.add(issue);
+    public void addInspection(Inspection inspection){
+        inspectionList.add(inspection);
     }
 
     public String getTrackingNumber() {
@@ -49,5 +49,5 @@ public class Restaurant {
         return longitude;
     }
 
-    public ArrayList<Issues> getIssuesList(){return issuesList;}
+    public ArrayList<Inspection> getInspectionList(){return inspectionList;}
 }

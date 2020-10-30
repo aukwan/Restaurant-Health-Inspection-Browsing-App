@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmpt276.group16.R;
-import com.cmpt276.group16.model.Issues;
+import com.cmpt276.group16.model.Inspection;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 
@@ -59,16 +59,16 @@ public class MainActivity extends AppCompatActivity {
         int NumCritical = 0;
         int NumNonCritical = 0;
         String hazardRated = "Low";
-        Issues issue1 = new Issues(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
-        restaurantManager.addIssues(issue1);
+        Inspection issue1 = new Inspection(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
+        restaurantManager.addInspection(issue1);
 
         inspectionDate = 20181024;
         inspectionType = "Follow-Up";
         NumCritical = 0;
         NumNonCritical = 1;
         hazardRated = "Low";
-        Issues issue2 = new Issues(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
-        restaurantManager.addIssues(issue2);
+        Inspection issue2 = new Inspection(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
+        restaurantManager.addInspection(issue2);
 
     }
     //-------------------------------------------------------------------------------------------------
