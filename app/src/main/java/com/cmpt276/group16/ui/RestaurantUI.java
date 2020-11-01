@@ -104,7 +104,7 @@ public class RestaurantUI extends AppCompatActivity {
     private void saveIssueIndex(int issueIndex){
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("Issue List - Index", issueIndex);
+        editor.putInt("Inspection List - Index", issueIndex);
         editor.apply();
     }
     //LISTVIEW BUTTONS

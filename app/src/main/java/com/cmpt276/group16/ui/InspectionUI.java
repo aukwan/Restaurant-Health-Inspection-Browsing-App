@@ -1,56 +1,59 @@
 package com.cmpt276.group16.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Inspection;
 import com.cmpt276.group16.model.RestaurantList;
+import com.cmpt276.group16.model.Violation;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Date;
+import java.util.ArrayList;
 
 public class InspectionUI extends AppCompatActivity {
 
     private int inspectionIndex;
     private int restaurantIndex;
     private Inspection inspection;
+    private ArrayList<Violation> violations;
     private RestaurantList restaurantManager = RestaurantList.getInstance();
-    public static final String ALL_VIOLATIONS_FILENAME = "AllViolations.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_issues_u_i);
+        setContentView(R.layout.activity_inspection_u_i);
 
         extractDataFromSharedPref();
         setTextView();
         setHazardRatingTextAndIcon();
         populateListView();
+        registerClickCallback();
     }
 
-    //Extract data from shared pref
+    // Extract data from shared pref
     private void extractDataFromSharedPref() {
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         restaurantIndex = prefs.getInt("Restaurant List - Index", 0);
-        inspectionIndex = prefs.getInt("Issue List - Index", 0);
+        inspectionIndex = prefs.getInt("Inspection List - Index", 0);
         inspection = restaurantManager.getRestaurant(restaurantIndex).getInspectionList().get(inspectionIndex);
+        violations = inspection.getViolationList();
     }
 
-    //setTextViews
+    // Set TextViews
     private void setTextView() {
         // Format full date of the inspection
         String unformattedDate = Integer.toString(inspection.getInspectionDate());
@@ -94,8 +97,33 @@ public class InspectionUI extends AppCompatActivity {
         }
     }
 
+    // Fill list view with icons and short descriptions of each violation
     private void populateListView() {
-        ListView violationList = findViewById(R.id.violationList);
+        //TODO: Create short descriptions for each violation
+        ArrayList<String> shortDescriptionViolations = new ArrayList<>();
+
+        // Build Adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                R.layout.violation_view,
+                shortDescriptionViolations
+        );
+
+        // Configure the list view
+        ListView listViolations = findViewById(R.id.violationListView);
+        listViolations.setAdapter(adapter);
     }
 
+    // Display full violation description as a toast
+    private void registerClickCallback() {
+        ListView listViolations = findViewById(R.id.violationListView);
+        listViolations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //TODO: Set full violation description
+                String longDescription = null;
+                Toast.makeText(InspectionUI.this, longDescription, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

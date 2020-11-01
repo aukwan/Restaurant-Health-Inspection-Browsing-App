@@ -9,7 +9,7 @@ public class Inspection {
     private int numCritical;
     private int numNonCritical;
     private String hazardRating;
-    private ArrayList<Violations> violationsList = new ArrayList<>();
+    private ArrayList<Violation> violationsList = new ArrayList<>();
 
     public Inspection(String trackingNumber, int inspectionDate, String inspectionType, int NumCritical, int NumNonCritical, String hazardRating){
         this.trackingNumber = trackingNumber;
@@ -44,7 +44,9 @@ public class Inspection {
         return hazardRating;
     }
 
-
+    public ArrayList<Violation> getViolationList() {
+        return violationsList;
+    }
     //TODO: create a violations adder
 
 }
