@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -12,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.cmpt276.group16.R;
@@ -99,15 +102,8 @@ public class InspectionUI extends AppCompatActivity {
 
     // Fill list view with icons and short descriptions of each violation
     private void populateListView() {
-        //TODO: Create short descriptions for each violation
-        ArrayList<String> shortDescriptionViolations = new ArrayList<>();
-
         // Build Adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                R.layout.violation_view,
-                shortDescriptionViolations
-        );
+        ArrayAdapter<Violation> adapter = new ViolationListAdapter();
 
         // Configure the list view
         ListView listViolations = findViewById(R.id.violationListView);
@@ -119,11 +115,34 @@ public class InspectionUI extends AppCompatActivity {
         ListView listViolations = findViewById(R.id.violationListView);
         listViolations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO: Set full violation description
-                String longDescription = null;
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Violation currentViolation = violations.get(position);
+                String longDescription = currentViolation.toString();
                 Toast.makeText(InspectionUI.this, longDescription, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private class ViolationListAdapter extends ArrayAdapter<Violation> {
+        public ViolationListAdapter() {
+            super(InspectionUI.this, R.layout.violation_view, violations);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View itemView = convertView;
+            if (itemView == null) {
+                itemView = getLayoutInflater().inflate(R.layout.violation_view, parent, false);
+            }
+            Violation currentViolation = violations.get(position);
+
+            ImageView imageView = findViewById(R.id.violationIcon);
+            imageView.setImageResource(currentViolation.getIconID());
+
+            TextView shortDescriptionText = itemView.findViewById(R.id.violationShortDescription);
+            shortDescriptionText.setText("" + currentViolation.getViolNum() + ", " + currentViolation.getSeverity());
+
+            return itemView;
+        }
     }
 }

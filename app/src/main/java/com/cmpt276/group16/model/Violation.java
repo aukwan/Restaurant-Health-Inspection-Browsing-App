@@ -26,4 +26,12 @@ public class Violation {
     public String getSeverity() {
         return severity;
     }
+
+    @Override
+    public String toString() {
+        return violNum +
+                ", " + severity +
+                ", " + description +
+                ", " + repeat;
+    }
 }
