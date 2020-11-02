@@ -34,6 +34,7 @@ public class RestaurantList implements Iterable<Restaurant>{
         for (int i = 0; i < restaurantsList.size(); i++){
             if (issue.getTrackingNumber().equals(restaurantsList.get(i).getTrackingNumber())){
                 restaurantsList.get(i).addIssue(issue);
+                Collections.sort(restaurantsList.get(i).getIssuesList());
                 return true;
             }
         }

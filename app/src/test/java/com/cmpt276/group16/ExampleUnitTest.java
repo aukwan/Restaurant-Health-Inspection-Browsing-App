@@ -64,5 +64,7 @@ public class ExampleUnitTest {
         Issues issue2 = new Issues(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
         tester.addIssues(issue2);
 
+
+
     }
 }

@@ -1,8 +1,9 @@
 package com.cmpt276.group16.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Issues {
+public class Issues implements Comparable<Issues> {
     private String trackingNumber;
     private int inspectionDate;
     private String inspectionType;
@@ -43,9 +44,13 @@ public class Issues {
     public String getHazardRated() {
         return hazardRated;
     }
+    @Override
+    public int compareTo(Issues o) {
+        return o.getInspectionDate()-this.getInspectionDate();
+    }
 
+}
 
     //TODO: create a violations adder
 
 
-}

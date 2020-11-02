@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +25,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private RestaurantList restaurantManager = RestaurantList.getInstance();
@@ -34,12 +39,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         readRestaurantData();
+        readInspectionData();
         registerClickCallback();
         populateListView();
     }
 
     private String formatString(String unformatted){
-        return unformatted.substring(1,unformatted.length()-1);
+        String out=unformatted;
+        if(unformatted!=null)
+            out=unformatted.substring(1,unformatted.length()-1);
+        return out;
     }
 
     //READ CSV FILE
@@ -58,8 +67,32 @@ public class MainActivity extends AppCompatActivity {
             while (((line=reader.readLine())!=null)){
                 String[] tokens=line.split(",");
                 Restaurant sample=new Restaurant(formatString(tokens[0]),formatString(tokens[1]),formatString(tokens[2]),formatString(tokens[3]),
-                        formatString(tokens[4]), Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
+                        formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])));
                 restaurantManager.addRestaurant(sample);
+            }
+        } catch (IOException e) {
+            Log.wtf("MainActivity","Error reading datafile on line"+line,e);
+            e.printStackTrace();
+        }
+    }
+
+    private void readInspectionData(){
+        InputStream is= getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader reader= new BufferedReader(
+                new InputStreamReader(is, StandardCharsets.UTF_8)
+        );
+        try {
+            reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String line="";
+        try {
+            while (((line=reader.readLine())!=null)){
+                String[] tokens=line.split(",");
+                Issues sample=new Issues(formatString(tokens[0]),Integer.parseInt(tokens[1]),formatString(tokens[2]),Integer.parseInt(tokens[3]),
+                        Integer.parseInt(tokens[4]), formatString(tokens[5]));
+                restaurantManager.addIssues(sample);
             }
         } catch (IOException e) {
             Log.wtf("MainActivity","Error reading datafile on line"+line,e);
@@ -93,11 +126,51 @@ public class MainActivity extends AppCompatActivity {
                 itemView = getLayoutInflater().inflate(R.layout.restaurantlistview, parent, false);
             }
             Restaurant currentRestaurant = restaurantManager.getRestaurant(position);
-            //TODO: add an image id for the restaurants (can be taken randomly)
-            // ImageView imageView = (ImageView) itemView.findViewById(R.id.imageItems) - imageItems is the id for the imageview in restaurantlistview
-            // imageView.setImageResource(currentRestaurant.getDrawable)
-            TextView textView  = (TextView) itemView.findViewById(R.id.textViewRestaurant);
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageRestaurant);
+            imageView.setImageResource(R.drawable.dish);
+            TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
             textView.setText(currentRestaurant.getName());
+            if(currentRestaurant.getIssuesList().size()!=0) {
+                Issues currentIssues=currentRestaurant.getIssuesList().get(0);
+                int totalIssues = currentIssues.getNumCritical() + currentIssues.getNumNonCritical();
+                String info = "# of Issues Found: " + totalIssues;
+                TextView textIssues = (TextView)itemView.findViewById(R.id.textInfo);
+                textIssues.setText(info);
+                Date c = Calendar.getInstance().getTime();
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+                String strDate = df.format(c);
+                int intDate = Integer.parseInt(strDate);
+                int timeDifference = intDate - currentIssues.getInspectionDate();
+                if (timeDifference <= 30) {
+                    String dateOutput = timeDifference + " days ago";
+                    TextView textDate = (TextView)itemView.findViewById(R.id.textInspectionDate);
+                    textDate.setText(dateOutput);
+                } else if (timeDifference < 365) {
+                    String unformatted = "" + currentIssues.getInspectionDate();
+                    Date date = null;
+                    try {
+                        date = df.parse(unformatted);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    df = new SimpleDateFormat("MMM d");
+                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
+                    String dateOutput=df.format(date);
+                    textDate.setText(dateOutput);
+                } else {
+                    String unformatted = "" + currentIssues.getInspectionDate();
+                    Date date = null;
+                    try {
+                        date = df.parse(unformatted);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    df = new SimpleDateFormat("MMM yyyy");
+                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
+                    String dateOutput =df.format(date);
+                    textDate.setText(dateOutput);
+                }
+            }
             return itemView;
         }
 
