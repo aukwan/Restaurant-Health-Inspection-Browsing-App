@@ -16,7 +16,7 @@ public class Restaurant implements Comparable<Restaurant> {
     //private int drawableIndex
     private ArrayList<Issues> issuesList = new ArrayList<>();
 
-    public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude, String violationDump){
+    public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude){
         this.trackingNumber = trackingNumber;
         this.name = name;
         this.physicalAddress = physicalAddress;
@@ -24,7 +24,6 @@ public class Restaurant implements Comparable<Restaurant> {
         this.facType = facType;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.violationDump = violationDump;
     }
     public void addIssue(Issues issue){
         issuesList.add(issue);
