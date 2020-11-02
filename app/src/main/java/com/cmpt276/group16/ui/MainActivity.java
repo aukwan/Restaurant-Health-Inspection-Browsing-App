@@ -171,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
                     textDate.setText(dateOutput);
                 }
             }
+            else{
+                TextView textInfo=(TextView)itemView.findViewById(R.id.textInfo);
+                textInfo.setText("No inspections");
+            }
             return itemView;
         }
 
