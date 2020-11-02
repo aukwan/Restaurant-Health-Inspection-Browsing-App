@@ -36,6 +36,7 @@ public class RestaurantUI extends AppCompatActivity {
         setupTextViews();
         populateListView();
         registerClickCallback();
+        backArrowPress();
     }
     //In case in the future he wants us to manually add a restaurant in the software
 //    @Override
@@ -97,18 +98,19 @@ public class RestaurantUI extends AppCompatActivity {
             }
 
             Inspection currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getInspectionList().get(position);
-            //TODO: add icons for hazard level, and other stuff
 
+            //set strings from issue details
             String numCrit = "Critical issues #: " + Integer.toString(currentInspection.getNumCritical());
             String numNonCrit = "Non - Critical issues #: " + Integer.toString(currentInspection.getNumNonCritical());
             String inspectDate = "Inspection Date: " + Integer.toString(currentInspection.getInspectionDate());
 
-
+            //initialise single item elements
             TextView criticalIssuesListViewTextView  = (TextView) itemView.findViewById(R.id.criticalIssuesListView);
             TextView nonCriticalIssuesListViewTextView  = (TextView) itemView.findViewById(R.id.nonCriticalIssuesListView);
             TextView inspectionDateListViewTextView  = (TextView) itemView.findViewById(R.id.inspectionDateListView);
             ImageView inspectionDotColorListViewImageView = (ImageView) itemView.findViewById(R.id.inspectionDotColorListView);
 
+            //set values to single item elements of the list view
             criticalIssuesListViewTextView.setText(numCrit);
             nonCriticalIssuesListViewTextView.setText(numNonCrit);
             inspectionDateListViewTextView.setText(inspectDate);
@@ -148,6 +150,17 @@ public class RestaurantUI extends AppCompatActivity {
             }
         });
 
+    }
+
+    //trigger back press on back arrow press
+    private void backArrowPress(){
+        ImageView backArrow = (ImageView) findViewById(R.id.restaurantUIBackButton);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
 }
