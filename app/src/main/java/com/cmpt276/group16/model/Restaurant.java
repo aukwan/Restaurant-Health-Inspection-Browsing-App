@@ -11,11 +11,12 @@ public class Restaurant implements Comparable<Restaurant> {
     private String facType;
     private Double latitude;
     private Double longitude;
+    private String violationDump;
     //TODO: add a drawable - drawn out randomly?
     //private int drawableIndex
     private ArrayList<Issues> issuesList = new ArrayList<>();
 
-    public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude){
+    public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude, String violationDump){
         this.trackingNumber = trackingNumber;
         this.name = name;
         this.physicalAddress = physicalAddress;
@@ -23,6 +24,7 @@ public class Restaurant implements Comparable<Restaurant> {
         this.facType = facType;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.violationDump = violationDump;
     }
     public void addIssue(Issues issue){
         issuesList.add(issue);

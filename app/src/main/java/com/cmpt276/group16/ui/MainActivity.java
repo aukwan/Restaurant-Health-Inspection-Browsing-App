@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             while (((line=reader.readLine())!=null)){
                 String[] tokens=line.split(",");
                 Restaurant sample=new Restaurant(formatString(tokens[0]),formatString(tokens[1]),formatString(tokens[2]),formatString(tokens[3]),
-                        formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])));
+                        formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])), formatString(tokens[7]));
                 restaurantManager.addRestaurant(sample);
             }
         } catch (IOException e) {
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             while (((line=reader.readLine())!=null)){
                 String[] tokens=line.split(",");
                 Issues sample=new Issues(formatString(tokens[0]),Integer.parseInt(tokens[1]),formatString(tokens[2]),Integer.parseInt(tokens[3]),
-                        Integer.parseInt(tokens[4]), formatString(tokens[5]));
+                        Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(tokens[6]));
                 restaurantManager.addIssues(sample);
             }
         } catch (IOException e) {
