@@ -1,6 +1,7 @@
 package com.cmpt276.group16.model;
 
 public class Violations {
+    private int iconID;
     private int violNum;
     private String severity;
     private String description;
@@ -14,4 +15,23 @@ public class Violations {
         this.repeat = repeat;
     }
 
+    public int getIconID() {
+        return iconID;
+    }
+
+    public int getViolNum() {
+        return violNum;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    @Override
+    public String toString() {
+        return violNum +
+                ", " + severity +
+                ", " + description +
+                ", " + repeat;
+    }
 }

@@ -1,26 +1,23 @@
 package com.cmpt276.group16.model;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
-public class Issues implements Comparable<Issues> {
+public class Inspection {
     private String trackingNumber;
     private int inspectionDate;
     private String inspectionType;
-    private int NumCritical;
-    private int NumNonCritical;
-    private String hazardRated;
+    private int numCritical;
+    private int numNonCritical;
+    private String hazardRating;
     private ArrayList<Violations> violationsList = new ArrayList<>();
-    private String violationLump;
 
-    public Issues(String trackingNumber, int inspectionDate, String inspectionType, int NumCritical, int NumNonCritical, String hazardRated, String violationLump){
+    public Inspection(String trackingNumber, int inspectionDate, String inspectionType, int NumCritical, int NumNonCritical, String hazardRating){
         this.trackingNumber = trackingNumber;
         this.inspectionDate = inspectionDate;
         this.inspectionType = inspectionType;
-        this.NumCritical = NumCritical;
-        this.NumNonCritical = NumNonCritical;
-        this.hazardRated = hazardRated;
-        this.violationLump=violationLump;
+        this.numCritical = NumCritical;
+        this.numNonCritical = NumNonCritical;
+        this.hazardRating = hazardRating;
     }
 
     public String getTrackingNumber() {
@@ -36,24 +33,21 @@ public class Issues implements Comparable<Issues> {
     }
 
     public int getNumCritical() {
-        return NumCritical;
+        return numCritical;
     }
 
     public int getNumNonCritical() {
-        return NumNonCritical;
+        return numNonCritical;
     }
 
-    public String getHazardRated() {
-        return hazardRated;
+    public String getHazardRating() {
+        return hazardRating;
     }
+
     public ArrayList<Violations> getViolationList() {
         return violationsList;
     }
 
-    @Override
-    public int compareTo(Issues o) {
-        return o.getInspectionDate()-this.getInspectionDate();
-    }
+    //TODO: create a violations adder
 
 }
-
