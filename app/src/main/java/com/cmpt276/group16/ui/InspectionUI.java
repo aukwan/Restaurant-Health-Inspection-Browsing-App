@@ -19,8 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Inspection;
+import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.RestaurantList;
-import com.cmpt276.group16.model.Violation;
+import com.cmpt276.group16.model.Violations;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -31,8 +32,8 @@ public class InspectionUI extends AppCompatActivity {
 
     private int inspectionIndex;
     private int restaurantIndex;
-    private Inspection inspection;
-    private ArrayList<Violation> violations;
+    private Issues inspection;
+    private ArrayList<Violations> violations;
     private RestaurantList restaurantManager = RestaurantList.getInstance();
 
     @Override
@@ -52,7 +53,7 @@ public class InspectionUI extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         restaurantIndex = prefs.getInt("Restaurant List - Index", 0);
         inspectionIndex = prefs.getInt("Inspection List - Index", 0);
-        inspection = restaurantManager.getRestaurant(restaurantIndex).getInspectionList().get(inspectionIndex);
+        inspection = restaurantManager.getRestaurant(restaurantIndex).getIssuesList().get(inspectionIndex);
         violations = inspection.getViolationList();
     }
 
@@ -82,7 +83,7 @@ public class InspectionUI extends AppCompatActivity {
     }
 
     private void setHazardRatingTextAndIcon() {
-        String hazardRating = inspection.getHazardRating();
+        String hazardRating = inspection.getHazardRated();
         ImageView hazardIcon = findViewById(R.id.hazardIcon);
         TextView hazardLevelView = findViewById(R.id.hazardRating);
         hazardLevelView.setText(hazardRating);
@@ -103,7 +104,7 @@ public class InspectionUI extends AppCompatActivity {
     // Fill list view with icons and short descriptions of each violation
     private void populateListView() {
         // Build Adapter
-        ArrayAdapter<Violation> adapter = new ViolationListAdapter();
+        ArrayAdapter<Violations> adapter = new ViolationListAdapter();
 
         // Configure the list view
         ListView listViolations = findViewById(R.id.violationListView);
@@ -116,14 +117,14 @@ public class InspectionUI extends AppCompatActivity {
         listViolations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Violation currentViolation = violations.get(position);
+                Violations currentViolation = violations.get(position);
                 String longDescription = currentViolation.toString();
                 Toast.makeText(InspectionUI.this, longDescription, Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private class ViolationListAdapter extends ArrayAdapter<Violation> {
+    private class ViolationListAdapter extends ArrayAdapter<Violations> {
         public ViolationListAdapter() {
             super(InspectionUI.this, R.layout.violation_view, violations);
         }
@@ -134,7 +135,7 @@ public class InspectionUI extends AppCompatActivity {
             if (itemView == null) {
                 itemView = getLayoutInflater().inflate(R.layout.violation_view, parent, false);
             }
-            Violation currentViolation = violations.get(position);
+            Violations currentViolation = violations.get(position);
 
             ImageView imageView = findViewById(R.id.violationIcon);
             imageView.setImageResource(currentViolation.getIconID());

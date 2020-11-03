@@ -1,6 +1,6 @@
 package com.cmpt276.group16.model;
 
-public class Violation {
+public class Violations {
     private int iconID;
     private int violNum;
     private String severity;
@@ -8,7 +8,7 @@ public class Violation {
     //You could choose during parsing if you want the repeat to be a boolean or not
     private String repeat;
 
-    public Violation(int violNum, String severity, String description, String repeat){
+    public Violations(int violNum, String severity, String description, String repeat){
         this.violNum = violNum;
         this.severity = severity;
         this.description = description;

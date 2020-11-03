@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmpt276.group16.R;
-import com.cmpt276.group16.model.Inspection;
+import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.RestaurantList;
 
 import java.lang.annotation.IncompleteAnnotationException;
@@ -26,7 +26,7 @@ import java.lang.annotation.IncompleteAnnotationException;
 public class RestaurantUI extends AppCompatActivity {
     private int restaurantIndex;
     private RestaurantList restaurantManager = RestaurantList.getInstance();
-    private ArrayAdapter<Inspection> adapter;
+    private ArrayAdapter<Issues> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -85,9 +85,9 @@ public class RestaurantUI extends AppCompatActivity {
 
     }
     //ADAPTER
-    private class MyListAdapter extends ArrayAdapter<Inspection>{
+    private class MyListAdapter extends ArrayAdapter<Issues>{
         public MyListAdapter() {
-            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getInspectionList());
+            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getIssuesList());
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
@@ -97,7 +97,7 @@ public class RestaurantUI extends AppCompatActivity {
                 itemView = getLayoutInflater().inflate(R.layout.issueslistview, parent, false);
             }
 
-            Inspection currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getInspectionList().get(position);
+            Issues currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getIssuesList().get(position);
 
             //set strings from issue details
             String numCrit = "Critical issues #: " + Integer.toString(currentInspection.getNumCritical());
@@ -114,10 +114,10 @@ public class RestaurantUI extends AppCompatActivity {
             criticalIssuesListViewTextView.setText(numCrit);
             nonCriticalIssuesListViewTextView.setText(numNonCrit);
             inspectionDateListViewTextView.setText(inspectDate);
-            if (currentInspection.getHazardRating() == "Low"){
+            if (currentInspection.getHazardRated() == "Low"){
               inspectionDotColorListViewImageView.setImageResource(R.drawable.greendot);
             }
-            else if (currentInspection.getHazardRating() == "Moderate"){
+            else if (currentInspection.getHazardRated() == "Moderate"){
                 inspectionDotColorListViewImageView.setImageResource(R.drawable.yellowdot);
             }
             else {

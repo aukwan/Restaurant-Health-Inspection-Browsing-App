@@ -5,17 +5,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmpt276.group16.R;
-import com.cmpt276.group16.model.Inspection;
+import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private RestaurantList restaurantManager = RestaurantList.getInstance();
@@ -25,14 +38,79 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //TODO: remove after csv file reader implemented
-        DEBUG_TEST_POPULATE();
-        ///////////////////////////////////////////////
-
+        readRestaurantData();
+        readInspectionData();
         registerClickCallback();
         populateListView();
     }
+
+    private String formatString(String unformatted){
+        String out=unformatted;
+        if(unformatted!=null)
+            out=unformatted.substring(1,unformatted.length()-1);
+        return out;
+    }
+
+    //READ CSV FILE
+    private void readRestaurantData() {
+        InputStream is= getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader reader= new BufferedReader(
+                new InputStreamReader(is, StandardCharsets.UTF_8)
+        );
+        try {
+            reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String line="";
+        try {
+            while (((line=reader.readLine())!=null)){
+                String[] tokens=line.split(",");
+                Restaurant sample=new Restaurant(formatString(tokens[0]),formatString(tokens[1]),formatString(tokens[2]),formatString(tokens[3]),
+                        formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])));
+                restaurantManager.addRestaurant(sample);
+            }
+        } catch (IOException e) {
+            Log.wtf("MainActivity","Error reading datafile on line"+line,e);
+            e.printStackTrace();
+        }
+    }
+
+    private void readInspectionData(){
+        InputStream is= getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader reader= new BufferedReader(
+                new InputStreamReader(is, StandardCharsets.UTF_8)
+        );
+        try {
+            reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String line="";
+        try {
+            while (((line=reader.readLine())!=null)){
+                String[] tokens=line.split(",");
+                String violationLump="";
+                for(int k=6;k<tokens.length;k++){
+                    violationLump=violationLump+tokens[k];
+                }
+                Issues sample;
+                if(tokens.length==6) {
+                    sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
+                            Integer.parseInt(tokens[4]), formatString(tokens[5]), null);
+                    restaurantManager.addIssues(sample);
+                }
+                else{
+                    sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
+                            Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(violationLump));
+                }
+            }
+        } catch (IOException e) {
+            Log.wtf("MainActivity","Error reading datafile on line"+line,e);
+            e.printStackTrace();
+        }
+    }
+
     //In case in the future he wants us to manually add a restaurant in the software
 //    @Override
 //    protected void onResume(){
@@ -41,38 +119,6 @@ public class MainActivity extends AppCompatActivity {
 //        populateListView();
 //
 //    }
-    //TODO: remove after implementing csv file reader  --------------------------------------------
-    //SIMPLE ADDING OF THE RESTAURANTS -- DEBUGGING PURPOSES
-    private void DEBUG_TEST_POPULATE(){
-        String trackingNumber = "SDFO-8HKP7E";
-        String name = "Pattullo A&W";
-        String physicalAddress = "12808 King George Blvd";
-        String physicalCity = "Surrey";
-        String facType = "Restaurant";
-        Double latitude = 49.20611;
-        Double longitude = -122.867;
-        Restaurant restaurantTest = new Restaurant(trackingNumber, name, physicalAddress, physicalCity, facType, latitude, longitude);
-        restaurantManager.addRestaurant(restaurantTest);
-
-        int inspectionDate = 20191002;
-        String inspectionType = "Routine";
-        int NumCritical = 0;
-        int NumNonCritical = 0;
-        String hazardRated = "Low";
-        Inspection issue1 = new Inspection(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
-        restaurantManager.addInspection(issue1);
-
-        inspectionDate = 20181024;
-        inspectionType = "Follow-Up";
-        NumCritical = 0;
-        NumNonCritical = 1;
-        hazardRated = "Low";
-        Inspection issue2 = new Inspection(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated);
-        restaurantManager.addInspection(issue2);
-
-    }
-    //-------------------------------------------------------------------------------------------------
-
     //POPULATES THE LIST VIEW
     private void populateListView() {
         adapter = new MyListAdapter();
@@ -90,12 +136,56 @@ public class MainActivity extends AppCompatActivity {
             if (itemView == null){
                 itemView = getLayoutInflater().inflate(R.layout.restaurantlistview, parent, false);
             }
-            Restaurant currentRestaurant = restaurantManager.getRestArray().get(position);
-            //TODO: add an image id for the restaurants (can be taken randomly)
-            // ImageView imageView = (ImageView) itemView.findViewById(R.id.imageItems) - imageItems is the id for the imageview in restaurantlistview
-            // imageView.setImageResource(currentRestaurant.getDrawable)
-            TextView textView  = (TextView) itemView.findViewById(R.id.textViewRestaurant);
+            Restaurant currentRestaurant = restaurantManager.getRestaurant(position);
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageRestaurant);
+            imageView.setImageResource(R.drawable.dish);
+            TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
             textView.setText(currentRestaurant.getName());
+            if(currentRestaurant.getIssuesList().size()!=0) {
+                Issues currentIssues=currentRestaurant.getIssuesList().get(0);
+                int totalIssues = currentIssues.getNumCritical() + currentIssues.getNumNonCritical();
+                String info = "# of Issues Found: " + totalIssues;
+                TextView textIssues = (TextView)itemView.findViewById(R.id.textInfo);
+                textIssues.setText(info);
+                Date c = Calendar.getInstance().getTime();
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+                String strDate = df.format(c);
+                int intDate = Integer.parseInt(strDate);
+                int timeDifference = intDate - currentIssues.getInspectionDate();
+                if (timeDifference <= 30) {
+                    String dateOutput = timeDifference + " days ago";
+                    TextView textDate = (TextView)itemView.findViewById(R.id.textInspectionDate);
+                    textDate.setText(dateOutput);
+                } else if (timeDifference < 365) {
+                    String unformatted = "" + currentIssues.getInspectionDate();
+                    Date date = null;
+                    try {
+                        date = df.parse(unformatted);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    df = new SimpleDateFormat("MMM d");
+                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
+                    String dateOutput=df.format(date);
+                    textDate.setText(dateOutput);
+                } else {
+                    String unformatted = "" + currentIssues.getInspectionDate();
+                    Date date = null;
+                    try {
+                        date = df.parse(unformatted);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    df = new SimpleDateFormat("MMM yyyy");
+                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
+                    String dateOutput =df.format(date);
+                    textDate.setText(dateOutput);
+                }
+            }
+            else{
+                TextView textInfo=(TextView)itemView.findViewById(R.id.textInfo);
+                textInfo.setText("No inspections");
+            }
             return itemView;
         }
 
