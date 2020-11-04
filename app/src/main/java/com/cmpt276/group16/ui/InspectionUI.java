@@ -51,7 +51,7 @@ public class InspectionUI extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         restaurantIndex = prefs.getInt("Restaurant List - Index", 0);
         inspectionIndex = prefs.getInt("Inspection List - Index", 0);
-        inspection = restaurantManager.getRestaurant(restaurantIndex).getInspectionList().get(inspectionIndex);
+        inspection = restaurantManager.getRestaurant(restaurantIndex).getIssuesList().get(inspectionIndex);
         violations = inspection.getViolationList();
     }
 
@@ -164,7 +164,7 @@ public class InspectionUI extends AppCompatActivity {
         }
     }
 
-    private void backArrowPress(){
+    private void backArrowPress() {
         ImageView backArrow = (ImageView) findViewById(R.id.inspectionUIBackBtn);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override

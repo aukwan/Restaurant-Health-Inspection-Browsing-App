@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
@@ -23,6 +22,7 @@ public class RestaurantUI extends AppCompatActivity {
     private int restaurantIndex;
     private final RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Issues> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -46,7 +46,7 @@ public class RestaurantUI extends AppCompatActivity {
 //    }
 
     //setup the textview for UI
-    private void setupTextViews(){
+    private void setupTextViews() {
         //get text values
         String restaurantName = restaurantManager.getRestArray().get(restaurantIndex).getName();
         String restaurantAddress = restaurantManager.getRestArray().get(restaurantIndex).getPhysicalCity() + ", " +
@@ -80,20 +80,22 @@ public class RestaurantUI extends AppCompatActivity {
         list.setAdapter(adapter);
 
     }
+
     //ADAPTER
-    private class MyListAdapter extends ArrayAdapter<Issues>{
+    private class MyListAdapter extends ArrayAdapter<Issues> {
         public MyListAdapter() {
-            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getInspectionList());
+            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getIssuesList());
         }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent) {
             View itemView = convertView;
 
-            if (itemView == null){
+            if (itemView == null) {
                 itemView = getLayoutInflater().inflate(R.layout.issueslistview, parent, false);
             }
 
-            Issues currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getInspectionList().get(position);
+            Issues currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getIssuesList().get(position);
 
             //set strings from issue details
             String numCrit = "Critical issues #: " + currentInspection.getNumCritical();
@@ -101,22 +103,20 @@ public class RestaurantUI extends AppCompatActivity {
             String inspectDate = "Inspection Date: " + currentInspection.getInspectionDate();
 
             //initialise single item elements
-            TextView criticalIssuesListViewTextView  = (TextView) itemView.findViewById(R.id.criticalIssuesListView);
-            TextView nonCriticalIssuesListViewTextView  = (TextView) itemView.findViewById(R.id.nonCriticalIssuesListView);
-            TextView inspectionDateListViewTextView  = (TextView) itemView.findViewById(R.id.inspectionDateListView);
+            TextView criticalIssuesListViewTextView = (TextView) itemView.findViewById(R.id.criticalIssuesListView);
+            TextView nonCriticalIssuesListViewTextView = (TextView) itemView.findViewById(R.id.nonCriticalIssuesListView);
+            TextView inspectionDateListViewTextView = (TextView) itemView.findViewById(R.id.inspectionDateListView);
             ImageView inspectionDotColorListViewImageView = (ImageView) itemView.findViewById(R.id.inspectionDotColorListView);
 
             //set values to single item elements of the list view
             criticalIssuesListViewTextView.setText(numCrit);
             nonCriticalIssuesListViewTextView.setText(numNonCrit);
             inspectionDateListViewTextView.setText(inspectDate);
-            if (currentInspection.getHazardRated().equals("Low")){
+            if (currentInspection.getHazardRated().equals("Low")) {
                 inspectionDotColorListViewImageView.setImageResource(R.drawable.greendot);
-            }
-            else if (currentInspection.getHazardRated().equals("Moderate")){
+            } else if (currentInspection.getHazardRated().equals("Moderate")) {
                 inspectionDotColorListViewImageView.setImageResource(R.drawable.yellowdot);
-            }
-            else {
+            } else {
                 inspectionDotColorListViewImageView.setImageResource(R.drawable.reddot);
             }
 
@@ -126,17 +126,18 @@ public class RestaurantUI extends AppCompatActivity {
     }
 
     //shared preference
-    private void saveIssueIndex(int issueIndex){
+    private void saveIssueIndex(int issueIndex) {
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("Inspection List - Index", issueIndex);
         editor.apply();
     }
+
     //LISTVIEW BUTTONS
     private void registerClickCallback() {
 
         ListView list = (ListView) findViewById(R.id.listViewIssues);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -149,7 +150,7 @@ public class RestaurantUI extends AppCompatActivity {
     }
 
     //trigger back press on back arrow press
-    private void backArrowPress(){
+    private void backArrowPress() {
         ImageView backArrow = (ImageView) findViewById(R.id.restaurantUIBackButton);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override

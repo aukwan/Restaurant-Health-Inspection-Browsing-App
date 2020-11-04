@@ -43,17 +43,17 @@ public class MainActivity extends AppCompatActivity {
         populateListView();
     }
 
-    private String formatString(String unformatted){
-        String out=unformatted;
-        if(unformatted!=null)
-            out=unformatted.substring(1,unformatted.length()-1);
+    private String formatString(String unformatted) {
+        String out = unformatted;
+        if (unformatted != null)
+            out = unformatted.substring(1, unformatted.length() - 1);
         return out;
     }
 
     //READ CSV FILE
     private void readRestaurantData() {
-        InputStream is= getResources().openRawResource(R.raw.restaurants_itr1);
-        BufferedReader reader= new BufferedReader(
+        InputStream is = getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8)
         );
         try {
@@ -61,23 +61,23 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String line="";
+        String line = "";
         try {
-            while (((line=reader.readLine())!=null)){
-                String[] tokens=line.split(",");
-                Restaurant sample=new Restaurant(formatString(tokens[0]),formatString(tokens[1]),formatString(tokens[2]),formatString(tokens[3]),
+            while (((line = reader.readLine()) != null)) {
+                String[] tokens = line.split(",");
+                Restaurant sample = new Restaurant(formatString(tokens[0]), formatString(tokens[1]), formatString(tokens[2]), formatString(tokens[3]),
                         formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])));
                 restaurantManager.addRestaurant(sample);
             }
         } catch (IOException e) {
-            Log.wtf("MainActivity","Error reading datafile on line"+line,e);
+            Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
             e.printStackTrace();
         }
     }
 
-    private void readInspectionData(){
-        InputStream is= getResources().openRawResource(R.raw.inspectionreports_itr1);
-        BufferedReader reader= new BufferedReader(
+    private void readInspectionData() {
+        InputStream is = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8)
         );
         try {
@@ -85,31 +85,30 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String line="";
+        String line = "";
         try {
-            while (((line=reader.readLine())!=null)){
-                String[] tokens=line.split(",");
-                String violationLump="";
-                for(int k=6;k<tokens.length;k++){
-                    violationLump=violationLump+tokens[k];
-                    if(k!=tokens.length-1){
-                        violationLump+=",";
+            while (((line = reader.readLine()) != null)) {
+                String[] tokens = line.split(",");
+                String violationLump = "";
+                for (int k = 6; k < tokens.length; k++) {
+                    violationLump = violationLump + tokens[k];
+                    if (k != tokens.length - 1) {
+                        violationLump += ",";
                     }
                 }
                 Issues sample;
-                if(tokens.length==6) {
+                if (tokens.length == 6) {
                     sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
                             Integer.parseInt(tokens[4]), formatString(tokens[5]), null);
                     restaurantManager.addIssues(sample);
-                }
-                else{
+                } else {
                     sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
                             Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(violationLump));
                     restaurantManager.addIssues(sample);
                 }
             }
         } catch (IOException e) {
-            Log.wtf("MainActivity","Error reading datafile on line"+line,e);
+            Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
             e.printStackTrace();
         }
     }
@@ -128,15 +127,17 @@ public class MainActivity extends AppCompatActivity {
         ListView list = findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
     }
+
     //ADAPTER
-    private class MyListAdapter extends ArrayAdapter<Restaurant>{
+    private class MyListAdapter extends ArrayAdapter<Restaurant> {
         public MyListAdapter() {
             super(MainActivity.this, R.layout.restaurantlistview, restaurantManager.getRestArray());
         }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent) {
             View itemView = convertView;
-            if (itemView == null){
+            if (itemView == null) {
                 itemView = getLayoutInflater().inflate(R.layout.restaurantlistview, parent, false);
             }
             Restaurant currentRestaurant = restaurantManager.getRestaurant(position);
@@ -144,22 +145,20 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageResource(R.drawable.dish);
             TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
             textView.setText(currentRestaurant.getName());
-            if(currentRestaurant.getInspectionList().size()!=0) {
-                Issues currentIssues=currentRestaurant.getInspectionList().get(0);
-                String hazardLevel=currentIssues.getHazardRated();
-                if(hazardLevel.equals("Low")){
-                    TextView textHazardLevel=(TextView)itemView.findViewById(R.id.textHazardLevel);
-                    textHazardLevel.setText("Hazard Level: "+hazardLevel);
-                    ImageView imageHazardLevel=(ImageView)itemView.findViewById(R.id.imageHazardLevel);
+            if (currentRestaurant.getIssuesList().size() != 0) {
+                Issues currentIssues = currentRestaurant.getIssuesList().get(0);
+                String hazardLevel = currentIssues.getHazardRated();
+                if (hazardLevel.equals("Low")) {
+                    TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
+                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                     imageHazardLevel.setImageResource(R.drawable.greendot);
-                }
-                else if(hazardLevel.equals("Moderate")) {
+                } else if (hazardLevel.equals("Moderate")) {
                     TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
                     textHazardLevel.setText("Hazard Level: " + hazardLevel);
                     ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                     imageHazardLevel.setImageResource(R.drawable.yellowdot);
-                }
-                else{
+                } else {
                     TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
                     textHazardLevel.setText("Hazard Level: " + hazardLevel);
                     ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 int totalIssues = currentIssues.getNumCritical() + currentIssues.getNumNonCritical();
                 String info = "# of Issues Found: " + totalIssues;
-                TextView textIssues = (TextView)itemView.findViewById(R.id.textInfo);
+                TextView textIssues = (TextView) itemView.findViewById(R.id.textInfo);
                 textIssues.setText(info);
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 int timeDifference = intDate - currentIssues.getInspectionDate();
                 if (timeDifference <= 30) {
                     String dateOutput = timeDifference + " days ago";
-                    TextView textDate = (TextView)itemView.findViewById(R.id.textInspectionDate);
+                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
                     textDate.setText(dateOutput);
                 } else if (timeDifference < 365) {
                     String unformatted = "" + currentIssues.getInspectionDate();
@@ -188,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     df = new SimpleDateFormat("MMM d");
                     TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
-                    String dateOutput=df.format(date);
+                    String dateOutput = df.format(date);
                     textDate.setText(dateOutput);
                 } else {
                     String unformatted = "" + currentIssues.getInspectionDate();
@@ -200,20 +199,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                     df = new SimpleDateFormat("MMM yyyy");
                     TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
-                    String dateOutput =df.format(date);
+                    String dateOutput = df.format(date);
                     textDate.setText(dateOutput);
                 }
-            }
-            else{
-                TextView textInfo=(TextView)itemView.findViewById(R.id.textInfo);
+            } else {
+                TextView textInfo = (TextView) itemView.findViewById(R.id.textInfo);
                 textInfo.setText("No inspections");
             }
             return itemView;
         }
 
     }
+
     //shared preference
-    private void saveRestaurantIndex(int restaurantIndex){
+    private void saveRestaurantIndex(int restaurantIndex) {
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("Restaurant List - Index", restaurantIndex);
@@ -224,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
     private void registerClickCallback() {
 
         ListView list = (ListView) findViewById(R.id.listViewMain);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

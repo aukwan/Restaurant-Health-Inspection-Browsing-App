@@ -14,9 +14,9 @@ public class Restaurant implements Comparable<Restaurant> {
     private String violationDump;
     //TODO: add a drawable - drawn out randomly?
     //private int drawableIndex
-    private final ArrayList<Issues> inspectionList = new ArrayList<>();
+    private final ArrayList<Issues> issuesList = new ArrayList<>();
 
-    public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude){
+    public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude) {
         this.trackingNumber = trackingNumber;
         this.name = name;
         this.physicalAddress = physicalAddress;
@@ -25,40 +25,50 @@ public class Restaurant implements Comparable<Restaurant> {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    public void addIssue(Issues issue){
-        inspectionList.add(issue);
+
+    public void addIssue(Issues issue) {
+        issuesList.add(issue);
     }
 
     public String getTrackingNumber() {
         return trackingNumber;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public String getPhysicalAddress(){
+
+    public String getPhysicalAddress() {
         return physicalAddress;
     }
-    public String getPhysicalCity(){
+
+    public String getPhysicalCity() {
         return physicalCity;
     }
-    public String getFacType(){
+
+    public String getFacType() {
         return facType;
     }
-    public Double getLatitude(){
+
+    public Double getLatitude() {
         return latitude;
     }
-    public Double getLongitude(){
+
+    public Double getLongitude() {
         return longitude;
     }
 
-    public ArrayList<Issues> getInspectionList(){return inspectionList;}
+    public ArrayList<Issues> getIssuesList() {
+        return issuesList;
+    }
 
     @Override
     public int compareTo(Restaurant o) {
         return Comparators.name.compare(this, o);
     }
-    public static class Comparators{
-        public static Comparator<Restaurant> name=new Comparator<Restaurant>() {
+
+    public static class Comparators {
+        public static Comparator<Restaurant> name = new Comparator<Restaurant>() {
             @Override
             public int compare(Restaurant o1, Restaurant o2) {
                 return o1.getName().compareToIgnoreCase(o2.getName());

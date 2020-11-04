@@ -1,38 +1,40 @@
 package com.cmpt276.group16.model;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Issues implements Comparable<Issues> {
     private String trackingNumber;
     private int inspectionDate;
     private String inspectionType;
-    private int NumCritical;
-    private int NumNonCritical;
+    private int numCritical;
+    private int numNonCritical;
     private String hazardRated;
     private ArrayList<Violations> violationsList = new ArrayList<>();
     private String violationLump;
 
-    public Issues(String trackingNumber, int inspectionDate, String inspectionType, int NumCritical, int NumNonCritical, String hazardRated, String violationLump){
+    public Issues(String trackingNumber, int inspectionDate, String inspectionType, int numCritical, int numNonCritical, String hazardRated, String violationLump) {
         this.trackingNumber = trackingNumber;
         this.inspectionDate = inspectionDate;
         this.inspectionType = inspectionType;
-        this.NumCritical = NumCritical;
-        this.NumNonCritical = NumNonCritical;
+        this.numCritical = numCritical;
+        this.numNonCritical = numNonCritical;
         this.hazardRated = hazardRated;
-        this.violationLump=violationLump;
+        this.violationLump = violationLump;
         parseViolationLump();
     }
-    private void parseViolationLump(){
-        if(violationLump!=null){
-            String[] violations=violationLump.split("\\|");
-            for(int k=0;k<violations.length;k++){
-                String[] temp=violations[k].split(",");
-                Violations violation=new Violations(Integer.parseInt(temp[0]),temp[1],temp[2],temp[3]);
+
+    private void parseViolationLump() {
+        if (violationLump != null){
+            String[] violations = violationLump.split("\\|");
+            for (int k = 0; k < violations.length; k++) {
+                String[] temp = violations[k].split(",");
+                Violations violation = new Violations(Integer.parseInt(temp[0]), temp[1], temp[2], temp[3]);
                 violationsList.add(violation);
             }
         }
-    };
+    }
+
+    ;
 
     public String getTrackingNumber() {
         return trackingNumber;
@@ -47,23 +49,24 @@ public class Issues implements Comparable<Issues> {
     }
 
     public int getNumCritical() {
-        return NumCritical;
+        return numCritical;
     }
 
     public int getNumNonCritical() {
-        return NumNonCritical;
+        return numNonCritical;
     }
 
     public String getHazardRated() {
         return hazardRated;
     }
+
     public ArrayList<Violations> getViolationList() {
         return violationsList;
     }
 
     @Override
     public int compareTo(Issues o) {
-        return o.getInspectionDate()-this.getInspectionDate();
+        return o.getInspectionDate() - this.getInspectionDate();
     }
 
 }
