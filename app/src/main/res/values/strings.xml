@@ -8,4 +8,5 @@
     <string name="inspection_date">Inspection Date</string>
     <string name="inspection_routine">Inspection Type</string>
     <string name="tools_ignore_contentdescription">tools:ignore=ContentDescription</string>
+    <string name="hazard_rating">Hazard Rating :</string>
 </resources>

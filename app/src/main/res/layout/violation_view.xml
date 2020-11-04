@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/violationIcon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:contentDescription="@string/tools_ignore_contentdescription"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -17,9 +17,22 @@
 
     <TextView
         android:id="@+id/violationShortDescription"
-        android:layout_width="351dp"
-        android:layout_height="56dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="243dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/violationIcon"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/violationSeverity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="32dp"
+        android:contentDescription="@string/tools_ignore_contentdescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_notification_overlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

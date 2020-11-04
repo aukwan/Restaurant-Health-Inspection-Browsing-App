@@ -4,12 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -17,16 +14,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmpt276.group16.R;
-import com.cmpt276.group16.model.Issues;
+import com.cmpt276.group16.model.Inspection;
 import com.cmpt276.group16.model.RestaurantList;
-
-import java.lang.annotation.IncompleteAnnotationException;
 
 
 public class RestaurantUI extends AppCompatActivity {
     private int restaurantIndex;
-    private RestaurantList restaurantManager = RestaurantList.getInstance();
-    private ArrayAdapter<Issues> adapter;
+    private final RestaurantList restaurantManager = RestaurantList.getInstance();
+    private ArrayAdapter<Inspection> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -85,9 +80,9 @@ public class RestaurantUI extends AppCompatActivity {
 
     }
     //ADAPTER
-    private class MyListAdapter extends ArrayAdapter<Issues>{
+    private class MyListAdapter extends ArrayAdapter<Inspection>{
         public MyListAdapter() {
-            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getIssuesList());
+            super(RestaurantUI.this, R.layout.issueslistview, restaurantManager.getRestArray().get(restaurantIndex).getInspectionList());
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
@@ -97,12 +92,12 @@ public class RestaurantUI extends AppCompatActivity {
                 itemView = getLayoutInflater().inflate(R.layout.issueslistview, parent, false);
             }
 
-            Issues currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getIssuesList().get(position);
+            Inspection currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getInspectionList().get(position);
 
             //set strings from issue details
-            String numCrit = "Critical issues #: " + Integer.toString(currentInspection.getNumCritical());
-            String numNonCrit = "Non - Critical issues #: " + Integer.toString(currentInspection.getNumNonCritical());
-            String inspectDate = "Inspection Date: " + Integer.toString(currentInspection.getInspectionDate());
+            String numCrit = "Critical issues #: " + currentInspection.getNumCritical();
+            String numNonCrit = "Non - Critical issues #: " + currentInspection.getNumNonCritical();
+            String inspectDate = "Inspection Date: " + currentInspection.getInspectionDate();
 
             //initialise single item elements
             TextView criticalIssuesListViewTextView  = (TextView) itemView.findViewById(R.id.criticalIssuesListView);

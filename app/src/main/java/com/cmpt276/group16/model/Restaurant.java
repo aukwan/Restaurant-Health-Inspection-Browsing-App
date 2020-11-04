@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Restaurant implements Comparable<Restaurant> {
-    private String trackingNumber;
-    private String name;
-    private String physicalAddress;
-    private String physicalCity;
-    private String facType;
-    private Double latitude;
-    private Double longitude;
+    private final String trackingNumber;
+    private final String name;
+    private final String physicalAddress;
+    private final String physicalCity;
+    private final String facType;
+    private final Double latitude;
+    private final Double longitude;
     private String violationDump;
     //TODO: add a drawable - drawn out randomly?
     //private int drawableIndex
-    private ArrayList<Issues> issuesList = new ArrayList<>();
+    private final ArrayList<Inspection> inspectionList = new ArrayList<>();
 
     public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude){
         this.trackingNumber = trackingNumber;
@@ -25,8 +25,8 @@ public class Restaurant implements Comparable<Restaurant> {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    public void addIssue(Issues issue){
-        issuesList.add(issue);
+    public void addIssue(Inspection issue){
+        inspectionList.add(issue);
     }
 
     public String getTrackingNumber() {
@@ -51,7 +51,7 @@ public class Restaurant implements Comparable<Restaurant> {
         return longitude;
     }
 
-    public ArrayList<Issues> getIssuesList(){return issuesList;}
+    public ArrayList<Inspection> getInspectionList(){return inspectionList;}
 
     @Override
     public int compareTo(Restaurant o) {

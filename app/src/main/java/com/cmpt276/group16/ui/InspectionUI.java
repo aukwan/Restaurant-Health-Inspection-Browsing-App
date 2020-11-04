@@ -13,13 +13,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Inspection;
-import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.model.Violations;
 
@@ -32,9 +29,9 @@ public class InspectionUI extends AppCompatActivity {
 
     private int inspectionIndex;
     private int restaurantIndex;
-    private Issues inspection;
+    private Inspection inspection;
     private ArrayList<Violations> violations;
-    private RestaurantList restaurantManager = RestaurantList.getInstance();
+    private final RestaurantList restaurantManager = RestaurantList.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +43,7 @@ public class InspectionUI extends AppCompatActivity {
         setHazardRatingTextAndIcon();
         populateListView();
         registerClickCallback();
+        backArrowPress();
     }
 
     // Extract data from shared pref
@@ -53,7 +51,7 @@ public class InspectionUI extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         restaurantIndex = prefs.getInt("Restaurant List - Index", 0);
         inspectionIndex = prefs.getInt("Inspection List - Index", 0);
-        inspection = restaurantManager.getRestaurant(restaurantIndex).getIssuesList().get(inspectionIndex);
+        inspection = restaurantManager.getRestaurant(restaurantIndex).getInspectionList().get(inspectionIndex);
         violations = inspection.getViolationList();
     }
 
@@ -85,19 +83,19 @@ public class InspectionUI extends AppCompatActivity {
     private void setHazardRatingTextAndIcon() {
         String hazardRating = inspection.getHazardRated();
         ImageView hazardIcon = findViewById(R.id.hazardIcon);
-        TextView hazardLevelView = findViewById(R.id.hazardRating);
-        hazardLevelView.setText(hazardRating);
+        TextView hazardLevelText = findViewById(R.id.hazardRating);
+        hazardLevelText.setText(hazardRating);
 
         // Change text and icon colour based on hazard level
         if (hazardRating.equals("Low")) {
-            hazardLevelView.setTextColor(Color.GREEN);
-            hazardIcon.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+            hazardLevelText.setTextColor(Color.GREEN);
+            hazardIcon.setImageResource(R.drawable.greendot);
         } else if (hazardRating.equals("Moderate")) {
-            hazardLevelView.setTextColor(Color.YELLOW);
-            hazardIcon.setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+            hazardLevelText.setTextColor(Color.YELLOW);
+            hazardIcon.setImageResource(R.drawable.yellowdot);
         } else {
-            hazardLevelView.setTextColor(Color.RED);
-            hazardIcon.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+            hazardLevelText.setTextColor(Color.RED);
+            hazardIcon.setImageResource(R.drawable.reddot);
         }
     }
 
@@ -137,13 +135,42 @@ public class InspectionUI extends AppCompatActivity {
             }
             Violations currentViolation = violations.get(position);
 
-            ImageView imageView = findViewById(R.id.violationIcon);
-            imageView.setImageResource(currentViolation.getIconID());
+            // Set icon based on violation number
+            ImageView violationIcon = itemView.findViewById(R.id.violationIcon);
+            if (currentViolation.getViolNum() >= 101 && currentViolation.getViolNum() <= 104) {
+                violationIcon.setImageResource(R.drawable.operation);
+            } else if (currentViolation.getViolNum() >= 201 && currentViolation.getViolNum() <= 212) {
+                violationIcon.setImageResource(R.drawable.food);
+            } else if (currentViolation.getViolNum() >= 301 && currentViolation.getViolNum() <= 315) {
+                violationIcon.setImageResource(R.drawable.sanitation);
+            } else if (currentViolation.getViolNum() >= 401 && currentViolation.getViolNum() <= 404) {
+                violationIcon.setImageResource(R.drawable.employee);
+            } else {
+                violationIcon.setImageResource(R.drawable.certification);
+            }
 
             TextView shortDescriptionText = itemView.findViewById(R.id.violationShortDescription);
             shortDescriptionText.setText("" + currentViolation.getViolNum() + ", " + currentViolation.getSeverity());
 
+            // Set severity icon colour
+            ImageView violationSeverityView = itemView.findViewById(R.id.violationSeverity);
+            if (currentViolation.getSeverity().equals("Not Critical")) {
+                violationSeverityView.setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+            } else {
+                violationSeverityView.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+            }
+
             return itemView;
         }
+    }
+
+    private void backArrowPress(){
+        ImageView backArrow = (ImageView) findViewById(R.id.inspectionUIBackBtn);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }
