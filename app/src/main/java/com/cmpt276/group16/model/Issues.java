@@ -21,7 +21,18 @@ public class Issues implements Comparable<Issues> {
         this.NumNonCritical = NumNonCritical;
         this.hazardRated = hazardRated;
         this.violationLump=violationLump;
+        parseViolationLump();
     }
+    private void parseViolationLump(){
+        if(violationLump!=null){
+            String[] violations=violationLump.split("\\|");
+            for(int k=0;k<violations.length;k++){
+                String[] temp=violations[k].split(",");
+                Violations violation=new Violations(Integer.parseInt(temp[0]),temp[1],temp[2],temp[3]);
+                violationsList.add(violation);
+            }
+        }
+    };
 
     public String getTrackingNumber() {
         return trackingNumber;

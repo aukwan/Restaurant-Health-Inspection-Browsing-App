@@ -93,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
                 String violationLump="";
                 for(int k=6;k<tokens.length;k++){
                     violationLump=violationLump+tokens[k];
+                    if(k!=tokens.length-1){
+                        violationLump+=",";
+                    }
                 }
                 Issues sample;
                 if(tokens.length==6) {
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
                             Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(violationLump));
+                    restaurantManager.addIssues(sample);
                 }
             }
         } catch (IOException e) {
