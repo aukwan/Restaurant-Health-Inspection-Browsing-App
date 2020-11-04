@@ -144,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageResource(R.drawable.dish);
             TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
             textView.setText(currentRestaurant.getName());
-            if(currentRestaurant.getIssuesList().size()!=0) {
-                Issues currentIssues=currentRestaurant.getIssuesList().get(0);
+            if(currentRestaurant.getInspectionList().size()!=0) {
+                Issues currentIssues=currentRestaurant.getInspectionList().get(0);
                 String hazardLevel=currentIssues.getHazardRated();
                 if(hazardLevel.equals("Low")){
                     TextView textHazardLevel=(TextView)itemView.findViewById(R.id.textHazardLevel);

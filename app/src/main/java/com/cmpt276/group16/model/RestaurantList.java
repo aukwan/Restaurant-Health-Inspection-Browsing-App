@@ -28,7 +28,7 @@ public class RestaurantList implements Iterable<Restaurant>{
         return restaurantsList.get(index);
     }
 
-    public boolean addIssues(Inspection issue){
+    public boolean addIssues(Issues issue){
         for (int i = 0; i < restaurantsList.size(); i++){
             if (issue.getTrackingNumber().equals(restaurantsList.get(i).getTrackingNumber())){
                 restaurantsList.get(i).addIssue(issue);

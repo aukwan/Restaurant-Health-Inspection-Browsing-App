@@ -14,7 +14,7 @@ public class Restaurant implements Comparable<Restaurant> {
     private String violationDump;
     //TODO: add a drawable - drawn out randomly?
     //private int drawableIndex
-    private final ArrayList<Inspection> inspectionList = new ArrayList<>();
+    private final ArrayList<Issues> inspectionList = new ArrayList<>();
 
     public Restaurant(String trackingNumber, String name, String physicalAddress, String physicalCity, String facType, Double latitude, Double longitude){
         this.trackingNumber = trackingNumber;
@@ -25,7 +25,7 @@ public class Restaurant implements Comparable<Restaurant> {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    public void addIssue(Inspection issue){
+    public void addIssue(Issues issue){
         inspectionList.add(issue);
     }
 
@@ -51,7 +51,7 @@ public class Restaurant implements Comparable<Restaurant> {
         return longitude;
     }
 
-    public ArrayList<Inspection> getInspectionList(){return inspectionList;}
+    public ArrayList<Issues> getInspectionList(){return inspectionList;}
 
     @Override
     public int compareTo(Restaurant o) {

@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.cmpt276.group16.R;
-import com.cmpt276.group16.model.Inspection;
+import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.model.Violations;
 
@@ -29,7 +29,7 @@ public class InspectionUI extends AppCompatActivity {
 
     private int inspectionIndex;
     private int restaurantIndex;
-    private Inspection inspection;
+    private Issues inspection;
     private ArrayList<Violations> violations;
     private final RestaurantList restaurantManager = RestaurantList.getInstance();
 

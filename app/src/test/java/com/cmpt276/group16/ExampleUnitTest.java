@@ -1,6 +1,5 @@
 package com.cmpt276.group16;
 
-import com.cmpt276.group16.model.Inspection;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 
