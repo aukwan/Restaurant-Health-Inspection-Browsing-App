@@ -3,6 +3,12 @@ package com.cmpt276.group16.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+/*
+
+Restaurant List class with singleton implementation (Stories.iteration1)
+
+ */
+
 
 public class RestaurantList implements Iterable<Restaurant> {
     private final ArrayList<Restaurant> restaurantsList = new ArrayList<>();

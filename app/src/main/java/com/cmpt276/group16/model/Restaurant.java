@@ -12,7 +12,6 @@ public class Restaurant implements Comparable<Restaurant> {
     private final Double latitude;
     private final Double longitude;
     private String violationDump;
-    //TODO: add a drawable - drawn out randomly?
     //private int drawableIndex
     private final ArrayList<Issues> issuesList = new ArrayList<>();
 

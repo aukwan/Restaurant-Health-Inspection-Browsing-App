@@ -1,5 +1,11 @@
 package com.cmpt276.group16.model;
 
+/*
+
+Violations class for violations data (Stories.iteration1)
+
+ */
+
 public class Violations {
     private final int violNum;
     private final String severity;

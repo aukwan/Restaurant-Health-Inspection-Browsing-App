@@ -28,7 +28,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+/*
 
+App entry point, List of all restaurants (Stories.iteration1.1)
+
+ */
 public class MainActivity extends AppCompatActivity {
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
@@ -168,17 +172,21 @@ public class MainActivity extends AppCompatActivity {
                 String info = "# of Issues Found: " + totalIssues;
                 TextView textIssues = (TextView) itemView.findViewById(R.id.textInfo);
                 textIssues.setText(info);
+
+                //initialize date related variables
                 Date c = Calendar.getInstance().getTime();
+                TextView readableDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
                 String strDate = df.format(c);
                 int intDate = Integer.parseInt(strDate);
-                int timeDifference = intDate - currentIssues.getInspectionDate();
+                int timeDifference = intDate - currentIssues.getIssueDate();
+                String dateOutput;
+
+                //convert int date to readable format
                 if (timeDifference <= 30) {
-                    String dateOutput = timeDifference + " days ago";
-                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
-                    textDate.setText(dateOutput);
+                    dateOutput = timeDifference + " days ago";
                 } else if (timeDifference < 365) {
-                    String unformatted = "" + currentIssues.getInspectionDate();
+                    String unformatted = "" + currentIssues.getIssueDate();
                     Date date = null;
                     try {
                         date = df.parse(unformatted);
@@ -186,11 +194,9 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     df = new SimpleDateFormat("MMM d");
-                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
-                    String dateOutput = df.format(date);
-                    textDate.setText(dateOutput);
+                    dateOutput = df.format(date);
                 } else {
-                    String unformatted = "" + currentIssues.getInspectionDate();
+                    String unformatted = "" + currentIssues.getIssueDate();
                     Date date = null;
                     try {
                         date = df.parse(unformatted);
@@ -198,10 +204,10 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     df = new SimpleDateFormat("MMM yyyy");
-                    TextView textDate = (TextView) itemView.findViewById(R.id.textInspectionDate);
-                    String dateOutput = df.format(date);
-                    textDate.setText(dateOutput);
+                    dateOutput = df.format(date);
+
                 }
+                readableDate.setText(dateOutput);
             } else {
                 TextView textInfo = (TextView) itemView.findViewById(R.id.textInfo);
                 textInfo.setText("No inspections");

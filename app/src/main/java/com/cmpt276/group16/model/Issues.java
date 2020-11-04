@@ -1,6 +1,11 @@
 package com.cmpt276.group16.model;
 
 import java.util.ArrayList;
+/*
+
+Issues class for issues data (Stories.iteration1)
+
+ */
 
 public class Issues implements Comparable<Issues> {
     private String trackingNumber;
@@ -40,7 +45,7 @@ public class Issues implements Comparable<Issues> {
         return trackingNumber;
     }
 
-    public int getInspectionDate() {
+    public int getIssueDate() {
         return inspectionDate;
     }
 
@@ -66,7 +71,7 @@ public class Issues implements Comparable<Issues> {
 
     @Override
     public int compareTo(Issues o) {
-        return o.getInspectionDate() - this.getInspectionDate();
+        return o.getIssueDate() - this.getIssueDate();
     }
 
 }

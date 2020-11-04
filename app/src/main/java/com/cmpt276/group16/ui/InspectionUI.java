@@ -25,6 +25,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 
+/*
+
+Inspection UI class (Stories.iteration1.3)
+
+ */
+
 public class InspectionUI extends AppCompatActivity {
 
     private int inspectionIndex;
@@ -58,7 +64,7 @@ public class InspectionUI extends AppCompatActivity {
     // Set TextViews
     private void setTextView() {
         // Format full date of the inspection
-        String unformattedDate = Integer.toString(inspection.getInspectionDate());
+        String unformattedDate = Integer.toString(inspection.getIssueDate());
         LocalDate date = LocalDate.parse(unformattedDate, DateTimeFormatter.BASIC_ISO_DATE);
         String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date);
 
