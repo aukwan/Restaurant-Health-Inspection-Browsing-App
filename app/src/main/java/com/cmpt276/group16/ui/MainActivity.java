@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -147,6 +146,25 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(currentRestaurant.getName());
             if(currentRestaurant.getIssuesList().size()!=0) {
                 Issues currentIssues=currentRestaurant.getIssuesList().get(0);
+                String hazardLevel=currentIssues.getHazardRated();
+                if(hazardLevel.equals("Low")){
+                    TextView textHazardLevel=(TextView)itemView.findViewById(R.id.textHazardLevel);
+                    textHazardLevel.setText("Hazard Level: "+hazardLevel);
+                    ImageView imageHazardLevel=(ImageView)itemView.findViewById(R.id.imageHazardLevel);
+                    imageHazardLevel.setImageResource(R.drawable.greendot);
+                }
+                else if(hazardLevel.equals("Moderate")) {
+                    TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
+                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
+                    imageHazardLevel.setImageResource(R.drawable.yellowdot);
+                }
+                else{
+                    TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
+                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
+                    imageHazardLevel.setImageResource(R.drawable.reddot);
+                }
                 int totalIssues = currentIssues.getNumCritical() + currentIssues.getNumNonCritical();
                 String info = "# of Issues Found: " + totalIssues;
                 TextView textIssues = (TextView)itemView.findViewById(R.id.textInfo);

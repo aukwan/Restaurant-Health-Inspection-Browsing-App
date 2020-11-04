@@ -114,10 +114,10 @@ public class RestaurantUI extends AppCompatActivity {
             criticalIssuesListViewTextView.setText(numCrit);
             nonCriticalIssuesListViewTextView.setText(numNonCrit);
             inspectionDateListViewTextView.setText(inspectDate);
-            if (currentInspection.getHazardRated() == "Low"){
+            if (currentInspection.getHazardRated().equals("Low")){
               inspectionDotColorListViewImageView.setImageResource(R.drawable.greendot);
             }
-            else if (currentInspection.getHazardRated() == "Moderate"){
+            else if (currentInspection.getHazardRated().equals("Moderate")){
                 inspectionDotColorListViewImageView.setImageResource(R.drawable.yellowdot);
             }
             else {
