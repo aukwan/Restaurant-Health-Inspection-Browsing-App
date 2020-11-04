@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cmpt276.group16.R;
-import com.cmpt276.group16.model.Inspection;
+import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 
@@ -30,7 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    private final RestaurantList restaurantManager = RestaurantList.getInstance();
+    private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
 
     @Override
@@ -43,17 +43,17 @@ public class MainActivity extends AppCompatActivity {
         populateListView();
     }
 
-    private String formatString(String unformatted) {
-        String out = unformatted;
-        if (unformatted != null)
-            out = unformatted.substring(1, unformatted.length() - 1);
+    private String formatString(String unformatted){
+        String out=unformatted;
+        if(unformatted!=null)
+            out=unformatted.substring(1,unformatted.length()-1);
         return out;
     }
 
     //READ CSV FILE
     private void readRestaurantData() {
-        InputStream is = getResources().openRawResource(R.raw.restaurants_itr1);
-        BufferedReader reader = new BufferedReader(
+        InputStream is= getResources().openRawResource(R.raw.restaurants_itr1);
+        BufferedReader reader= new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8)
         );
         try {
@@ -61,23 +61,23 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String line = "";
+        String line="";
         try {
-            while (((line = reader.readLine()) != null)) {
-                String[] tokens = line.split(",");
-                Restaurant sample = new Restaurant(formatString(tokens[0]), formatString(tokens[1]), formatString(tokens[2]), formatString(tokens[3]),
+            while (((line=reader.readLine())!=null)){
+                String[] tokens=line.split(",");
+                Restaurant sample=new Restaurant(formatString(tokens[0]),formatString(tokens[1]),formatString(tokens[2]),formatString(tokens[3]),
                         formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])));
                 restaurantManager.addRestaurant(sample);
             }
         } catch (IOException e) {
-            Log.wtf("MainActivity","Error reading datafile on line" + line, e);
+            Log.wtf("MainActivity","Error reading datafile on line"+line,e);
             e.printStackTrace();
         }
     }
 
     private void readInspectionData(){
-        InputStream is = getResources().openRawResource(R.raw.inspectionreports_itr1);
-        BufferedReader reader = new BufferedReader(
+        InputStream is= getResources().openRawResource(R.raw.inspectionreports_itr1);
+        BufferedReader reader= new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8)
         );
         try {
@@ -85,24 +85,25 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String line = "";
+        String line="";
         try {
-            while (((line = reader.readLine()) != null)){
-                String[] tokens = line.split(",");
-                String violationLump = "";
-                for(int k = 6; k < tokens.length; k++) {
-                    violationLump = violationLump+tokens[k];
-                    if(k != tokens.length-1) {
-                        violationLump += ",";
+            while (((line=reader.readLine())!=null)){
+                String[] tokens=line.split(",");
+                String violationLump="";
+                for(int k=6;k<tokens.length;k++){
+                    violationLump=violationLump+tokens[k];
+                    if(k!=tokens.length-1){
+                        violationLump+=",";
                     }
                 }
-                Inspection sample;
-                if(tokens.length == 6) {
-                    sample = new Inspection(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
+                Issues sample;
+                if(tokens.length==6) {
+                    sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
                             Integer.parseInt(tokens[4]), formatString(tokens[5]), null);
                     restaurantManager.addIssues(sample);
-                } else{
-                    sample = new Inspection(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
+                }
+                else{
+                    sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
                             Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(violationLump));
                     restaurantManager.addIssues(sample);
                 }
@@ -143,9 +144,28 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageResource(R.drawable.dish);
             TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
             textView.setText(currentRestaurant.getName());
-            if(currentRestaurant.getInspectionList().size() != 0) {
-                Inspection currentInspection =currentRestaurant.getInspectionList().get(0);
-                int totalIssues = currentInspection.getNumCritical() + currentInspection.getNumNonCritical();
+            if(currentRestaurant.getIssuesList().size()!=0) {
+                Issues currentIssues=currentRestaurant.getIssuesList().get(0);
+                String hazardLevel=currentIssues.getHazardRated();
+                if(hazardLevel.equals("Low")){
+                    TextView textHazardLevel=(TextView)itemView.findViewById(R.id.textHazardLevel);
+                    textHazardLevel.setText("Hazard Level: "+hazardLevel);
+                    ImageView imageHazardLevel=(ImageView)itemView.findViewById(R.id.imageHazardLevel);
+                    imageHazardLevel.setImageResource(R.drawable.greendot);
+                }
+                else if(hazardLevel.equals("Moderate")) {
+                    TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
+                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
+                    imageHazardLevel.setImageResource(R.drawable.yellowdot);
+                }
+                else{
+                    TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
+                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
+                    imageHazardLevel.setImageResource(R.drawable.reddot);
+                }
+                int totalIssues = currentIssues.getNumCritical() + currentIssues.getNumNonCritical();
                 String info = "# of Issues Found: " + totalIssues;
                 TextView textIssues = (TextView)itemView.findViewById(R.id.textInfo);
                 textIssues.setText(info);
@@ -153,13 +173,13 @@ public class MainActivity extends AppCompatActivity {
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
                 String strDate = df.format(c);
                 int intDate = Integer.parseInt(strDate);
-                int timeDifference = intDate - currentInspection.getInspectionDate();
+                int timeDifference = intDate - currentIssues.getInspectionDate();
                 if (timeDifference <= 30) {
                     String dateOutput = timeDifference + " days ago";
                     TextView textDate = (TextView)itemView.findViewById(R.id.textInspectionDate);
                     textDate.setText(dateOutput);
                 } else if (timeDifference < 365) {
-                    String unformatted = "" + currentInspection.getInspectionDate();
+                    String unformatted = "" + currentIssues.getInspectionDate();
                     Date date = null;
                     try {
                         date = df.parse(unformatted);
@@ -171,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                     String dateOutput=df.format(date);
                     textDate.setText(dateOutput);
                 } else {
-                    String unformatted = "" + currentInspection.getInspectionDate();
+                    String unformatted = "" + currentIssues.getInspectionDate();
                     Date date = null;
                     try {
                         date = df.parse(unformatted);
