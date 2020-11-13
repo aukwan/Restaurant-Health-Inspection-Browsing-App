@@ -28,10 +28,18 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
+        <!--
+        First activity is on the google maps
+        -->
         <activity
             android:name=".ui.RestaurantMapsActivity"
-            android:label="@string/title_activity_restaurant_maps"></activity>
+            android:label="@string/title_activity_restaurant_maps">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".ui.InspectionUI"
             android:screenOrientation="portrait" />
@@ -41,11 +49,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
