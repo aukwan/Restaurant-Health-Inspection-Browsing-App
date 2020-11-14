@@ -13,11 +13,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cmpt276.group16.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,6 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -39,7 +44,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private static final float DEFAULT_ZOOM = 15f;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -69,27 +75,67 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
     private void getDeviceLocation(){
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(RestaurantMapsActivity.this);
+
         try{
             if (mLocationPermissionGranted) {
-                final Task location = mFusedLocationProviderClient.getLastLocation();
+                final Task<Location> location = mFusedLocationProviderClient.getLastLocation();
                 if (location != null) {
-                    location.addOnCompleteListener(new OnCompleteListener() {
+//                    location.addOnCompleteListener(new OnCompleteListener<Location>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task task) {
+//                            if (task.isSuccessful()) {
+//                                Log.d(TAG, "onComplete: found location");
+//                                Location currentLocation = (Location) task.getResult();
+//                                //TODO: fix getLatitude() and getLongitude()
+//                                if (currentLocation != null) {
+//                                    LatLng currLatiAndLong = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+//                                    moveCamera(currLatiAndLong, DEFAULT_ZOOM);
+//                                }
+//                                else {
+//                                    Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+//                                }
+//                            } else {
+//                                Log.d(TAG, "onComplete current location is null");
+//                                Toast.makeText(RestaurantMapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+                    location.addOnSuccessListener(new OnSuccessListener<Location>() {
                         @Override
-                        public void onComplete(@NonNull Task task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "onComplete: found location");
-                                Location currentLocation = (Location) task.getResult();
-                                //TODO: fix getLatitude() and getLongitude()
-                                if (currentLocation != null) {
-                                    LatLng currLatiAndLong = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                                    moveCamera(currLatiAndLong, DEFAULT_ZOOM);
-                                }
-                                else {
-                                    Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Log.d(TAG, "onComplete current location is null");
-                                Toast.makeText(RestaurantMapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                        public void onSuccess(Location location) {
+                            Log.d(TAG, "onComplete: found location");
+                            //TODO: fix getLatitude() and getLongitude()
+                            if (location != null) {
+                                Double wayLatitude = location.getLatitude();
+                                Double wayLongitude = location.getLongitude();
+                                LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
+                                moveCamera(currLatiAndLong, DEFAULT_ZOOM);
+                            }
+                            else {
+                                //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+                                locationRequest = LocationRequest.create();
+                                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                                locationRequest.setInterval(20 * 1000);
+                                locationCallback = new LocationCallback() {
+                                    @Override
+                                    public void onLocationResult(LocationResult locationResult) {
+                                        if (locationResult == null) {
+                                            return;
+                                        }
+                                        for (Location location : locationResult.getLocations()) {
+                                            if (location != null) {
+                                                Double wayLatitude = location.getLatitude();
+                                                Double wayLongitude = location.getLongitude();
+                                                LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
+                                                moveCamera(currLatiAndLong, DEFAULT_ZOOM);
+                                            }
+                                            else {
+                                                Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                };
+                                mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                             }
                         }
                     });
