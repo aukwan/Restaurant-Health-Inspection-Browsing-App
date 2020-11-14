@@ -6,8 +6,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -49,7 +53,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (mLocationPermissionGranted){
+        if (mLocationPermissionGranted) {
             getDeviceLocation();
 
         }
@@ -68,27 +72,35 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         try{
             if (mLocationPermissionGranted) {
                 final Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
-
-                            Log.d(TAG, "onComplete: found location");
-                            Location currentLocation = (Location) task.getResult();
-                            Log.d(TAG, "got lat: " + currentLocation.getLatitude());
-                            LatLng currLatiAndLong = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                            moveCamera(currLatiAndLong, DEFAULT_ZOOM);
-                        } else {
-                            Log.d(TAG, "onComplete current location is null");
-                            Toast.makeText(RestaurantMapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                if (location != null) {
+                    location.addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "onComplete: found location");
+                                Location currentLocation = (Location) task.getResult();
+                                //TODO: fix getLatitude() and getLongitude()
+                                if (currentLocation != null) {
+                                    LatLng currLatiAndLong = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                                    moveCamera(currLatiAndLong, DEFAULT_ZOOM);
+                                }
+                                else {
+                                    Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Log.d(TAG, "onComplete current location is null");
+                                Toast.makeText(RestaurantMapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }catch(SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
+
+
 
     private void moveCamera(LatLng latLng, float zoom){
         Log.d(TAG, "moveCamera: moving the camera to : lat: " + latLng.latitude + " lng: " + latLng.longitude);
