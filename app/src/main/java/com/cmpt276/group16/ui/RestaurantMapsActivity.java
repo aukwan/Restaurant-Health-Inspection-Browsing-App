@@ -46,6 +46,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -61,7 +62,12 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
         if (mLocationPermissionGranted) {
             getDeviceLocation();
-
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+            //gui textbox
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
     }
 
@@ -80,31 +86,10 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             if (mLocationPermissionGranted) {
                 final Task<Location> location = mFusedLocationProviderClient.getLastLocation();
                 if (location != null) {
-//                    location.addOnCompleteListener(new OnCompleteListener<Location>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task task) {
-//                            if (task.isSuccessful()) {
-//                                Log.d(TAG, "onComplete: found location");
-//                                Location currentLocation = (Location) task.getResult();
-//                                //TODO: fix getLatitude() and getLongitude()
-//                                if (currentLocation != null) {
-//                                    LatLng currLatiAndLong = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//                                    moveCamera(currLatiAndLong, DEFAULT_ZOOM);
-//                                }
-//                                else {
-//                                    Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
-//                                }
-//                            } else {
-//                                Log.d(TAG, "onComplete current location is null");
-//                                Toast.makeText(RestaurantMapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
                     location.addOnSuccessListener(new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
                             Log.d(TAG, "onComplete: found location");
-                            //TODO: fix getLatitude() and getLongitude()
                             if (location != null) {
                                 Double wayLatitude = location.getLatitude();
                                 Double wayLongitude = location.getLongitude();
