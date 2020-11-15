@@ -18,6 +18,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cmpt276.group16.R;
+import com.cmpt276.group16.model.RestaurantList;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -44,6 +45,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private static final float DEFAULT_ZOOM = 15f;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    private final RestaurantList restaurantManager = RestaurantList.getInstance();
+
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
@@ -59,8 +62,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         if (mLocationPermissionGranted) {
+            //sets user location:
             getDeviceLocation();
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
@@ -68,6 +71,14 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             mMap.setMyLocationEnabled(true);
             //gui textbox
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+            //sets the markers for all the locations
+            for (int i =0; i < restaurantManager.getRestArray().size(); i++){
+
+                LatLng latLng = new LatLng(restaurantManager.getRestArray().get(i).getLatitude(), restaurantManager.getRestArray().get(i).getLongitude());
+                MarkerOptions options = new MarkerOptions().position(latLng).title(restaurantManager.getRestArray().get(i).getName());
+                mMap.addMarker(options);
+            }
         }
     }
 
