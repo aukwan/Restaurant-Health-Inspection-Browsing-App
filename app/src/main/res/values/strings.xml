@@ -9,4 +9,5 @@
     <string name="inspection_routine">Inspection Type</string>
     <string name="tools_ignore_contentdescription">tools:ignore=ContentDescription</string>
     <string name="hazard_rating">Hazard Rating :</string>
+    <string name="title_activity_restaurant_maps">Map</string>
 </resources>

@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         readInspectionData();
         registerClickCallback();
         populateListView();
+        Intent intent = new Intent(MainActivity.this, RestaurantMapsActivity.class);
+        startActivity(intent);
     }
 
     private String formatString(String unformatted) {
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             while (((line = reader.readLine()) != null)) {
                 String[] tokens = line.split(",");
                 Restaurant sample = new Restaurant(formatString(tokens[0]), formatString(tokens[1]), formatString(tokens[2]), formatString(tokens[3]),
-                        formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])));
+                        formatString(tokens[4]), Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
                 restaurantManager.addRestaurant(sample);
             }
         } catch (IOException e) {
