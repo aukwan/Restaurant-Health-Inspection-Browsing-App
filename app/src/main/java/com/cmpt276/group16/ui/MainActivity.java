@@ -13,9 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
+import com.cmpt276.group16.model.NewDataHarvester;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 
@@ -28,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 /*
 
 App entry point, List of all restaurants (Stories.iteration1.1)
@@ -37,26 +40,48 @@ public class MainActivity extends AppCompatActivity {
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        NewDataHarvester newDataHarvester = new NewDataHarvester();
+        newDataHarvester.checkForPeriodicDataChange(this);
+
         readRestaurantData();
         readInspectionData();
         registerClickCallback();
         populateListView();
+
+
     }
 
+    //==============
+    // functions that we use to handle data
+    //==============
     private String formatString(String unformatted) {
         String out = unformatted;
         if (unformatted != null)
             out = unformatted.substring(1, unformatted.length() - 1);
         return out;
     }
+    //==============
+    //==============
+    //==============
+
+
+    private void checkForNewData() {
+        final NewDataHarvester newDataHarvester = new NewDataHarvester();
+        newDataHarvester.restaurantGetRequest();
+        Log.i("resultsOfJSON", newDataHarvester.getLastModified());
+
+    }
 
     //READ CSV FILE
     private void readRestaurantData() {
-        InputStream is = getResources().openRawResource(R.raw.restaurants_itr1);
+        InputStream is = getResources().openRawResource(R.raw.restaurants);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8)
         );
@@ -80,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readInspectionData() {
-        InputStream is = getResources().openRawResource(R.raw.inspectionreports_itr1);
+        InputStream is = getResources().openRawResource(R.raw.inspectionreports);
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(is, StandardCharsets.UTF_8)
         );

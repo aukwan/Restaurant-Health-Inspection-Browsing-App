@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cmpt276.group16">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,9 +11,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.InspectionUI"  android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.RestaurantUI"  android:screenOrientation="portrait"/>
-        <activity android:name=".ui.MainActivity"  android:screenOrientation="portrait">
+        <activity
+            android:name=".ui.inspectionUpdatePopup"
+            android:theme="@style/AppTheme.updatePopup"
+            ></activity>
+        <activity
+            android:name=".ui.restaurantUpdatePopup"
+            android:theme="@style/AppTheme.updatePopup" />
+        <activity
+            android:name=".ui.InspectionUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.RestaurantUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
