@@ -12,6 +12,8 @@ public class Restaurant implements Comparable<Restaurant> {
     private final Double latitude;
     private final Double longitude;
     private String violationDump;
+    private String mostRecentHazardLevels = "Low";
+
     //private int drawableIndex
     private final ArrayList<Issues> issuesList = new ArrayList<>();
 
@@ -24,6 +26,9 @@ public class Restaurant implements Comparable<Restaurant> {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+    public String getMostRecentHazardLevels(){ return mostRecentHazardLevels;}
+    public void setMostRecentHazardLevels(String hazardLevels){mostRecentHazardLevels = hazardLevels;}
+
 
     public void addIssue(Issues issue) {
         issuesList.add(issue);
