@@ -76,7 +76,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             for (int i =0; i < restaurantManager.getRestArray().size(); i++){
 
                 LatLng latLng = new LatLng(restaurantManager.getRestArray().get(i).getLatitude(), restaurantManager.getRestArray().get(i).getLongitude());
-                MarkerOptions options = new MarkerOptions().position(latLng).title(restaurantManager.getRestArray().get(i).getName());
+                MarkerOptions options = new MarkerOptions().position(latLng).title(restaurantManager.getRestArray().get(i).getName()).snippet("");
                 mMap.addMarker(options);
             }
         }
