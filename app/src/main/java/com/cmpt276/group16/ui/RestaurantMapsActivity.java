@@ -7,7 +7,11 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,6 +22,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cmpt276.group16.R;
+import com.cmpt276.group16.model.CustomInfoWindowAdapter;
+import com.cmpt276.group16.model.Issues;
+import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -28,11 +35,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+
+//TODO: add map cluster
+//TODO: make sure it constantly updates as the user moves
 
 public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -43,10 +57,11 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 1254;
     private boolean mLocationPermissionGranted = false;
     private static final float DEFAULT_ZOOM = 15f;
+    private Marker mMarker;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private final RestaurantList restaurantManager = RestaurantList.getInstance();
-
+    private int position;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
@@ -62,6 +77,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         if (mLocationPermissionGranted) {
             //sets user location:
             getDeviceLocation();
@@ -71,16 +87,62 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             mMap.setMyLocationEnabled(true);
             //gui textbox
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
+            mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
             //sets the markers for all the locations
             for (int i =0; i < restaurantManager.getRestArray().size(); i++){
+                position = i;
 
+                MarkerOptions options;
                 LatLng latLng = new LatLng(restaurantManager.getRestArray().get(i).getLatitude(), restaurantManager.getRestArray().get(i).getLongitude());
-                MarkerOptions options = new MarkerOptions().position(latLng).title(restaurantManager.getRestArray().get(i).getName()).snippet("");
-                mMap.addMarker(options);
+                Restaurant currentRestaurant = restaurantManager.getRestArray().get(i);
+                BitmapDescriptor mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("greendot", 100, 100));
+                String mSnippet = "City: " + currentRestaurant.getPhysicalCity() + "\n" + "Address: " + currentRestaurant.getPhysicalAddress();
+                //PROBLEM
+                if (currentRestaurant.getIssuesList().size() != 0) {
+                    Issues currentIssues = currentRestaurant.getIssuesList().get(0);
+                    String hazardLevel = currentIssues.getHazardRated();
+                    mSnippet = "City: " + currentRestaurant.getPhysicalCity() + "\n" + "Address: " + currentRestaurant.getPhysicalAddress() + "\n" + "Hazard Level: " + hazardLevel;
+                    if (hazardLevel.equals("High")) {
+                        mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("reddot", 100, 100));
+                    } else if (hazardLevel.equals("Moderate")) {
+                        mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("yellowdot", 100, 100));
+                    }
+                }
+
+                options = new MarkerOptions().position(latLng).title(restaurantManager.getRestArray().get(i).getName()).snippet(mSnippet).icon(mIcon);
+                mMarker = mMap.addMarker(options);
+                mMarker.setTag(i);
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker){
+                        int position = (int)marker.getTag();
+                       if (marker.getTag() != null) {
+                            //Toast.makeText(RestaurantMapsActivity.this, "" + (restaurantManager.getRestArray().get(position).getIssuesList().get(0).getHazardRated().equals("Low")), Toast.LENGTH_SHORT).show();
+                            saveRestaurantIndex(position);
+                            Intent intent = new Intent(RestaurantMapsActivity.this, RestaurantUI.class);
+                            startActivity(intent);
+                       }
+                    }
+                });
             }
+
         }
     }
+    private Bitmap resizeMapIcons(String iconName, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
+
+    //shared preference
+    private void saveRestaurantIndex(int restaurantIndex) {
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("Restaurant List - Index", restaurantIndex);
+        editor.apply();
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +154,6 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
     private void getDeviceLocation(){
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(RestaurantMapsActivity.this);
-
         try{
             if (mLocationPermissionGranted) {
                 final Task<Location> location = mFusedLocationProviderClient.getLastLocation();
