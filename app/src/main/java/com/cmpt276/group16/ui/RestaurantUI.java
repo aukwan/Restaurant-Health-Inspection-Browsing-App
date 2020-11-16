@@ -176,9 +176,8 @@ public class RestaurantUI extends AppCompatActivity {
         editor.apply();
     }
 
-    //ListView BUTTONS
+    // ListView buttons and GPS coordinate button
     private void registerClickCallback() {
-
         ListView list = (ListView) findViewById(R.id.listViewIssues);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -186,6 +185,15 @@ public class RestaurantUI extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 saveIssueIndex(position);
                 Intent intent = new Intent(RestaurantUI.this, InspectionUI.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView restaurantGPSTextView = findViewById(R.id.restaurantGPS);
+        restaurantGPSTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RestaurantUI.this, RestaurantMapsActivity.class);
                 startActivity(intent);
             }
         });

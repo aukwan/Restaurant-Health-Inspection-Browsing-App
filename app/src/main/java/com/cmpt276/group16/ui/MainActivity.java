@@ -1,11 +1,13 @@
 package com.cmpt276.group16.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,6 +20,7 @@ import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -227,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    //LISTVIEW BUTTONS
+    //LISTVIEW and BottomNavigationView BUTTONS
     private void registerClickCallback() {
 
         ListView list = (ListView) findViewById(R.id.listViewMain);
@@ -241,6 +244,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        BottomNavigationView bottomNav = findViewById(R.id.restaurant_list_bottom_nav);
+        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_maps:
+                        Intent intent = new Intent(MainActivity.this, RestaurantMapsActivity.class);
+                        startActivity(intent);
+                        return true;
+                    default: return true;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
     }
 
 }

@@ -88,7 +88,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginTop="204dp"
         android:contentDescription="@string/tools_ignore_contentdescription"
         android:src="@android:drawable/ic_notification_overlay"
         app:layout_constraintStart_toEndOf="@+id/textView"
@@ -127,13 +127,13 @@
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/cuprum"
         android:text="@string/hazard_rating"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/inspectionRoutine" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
