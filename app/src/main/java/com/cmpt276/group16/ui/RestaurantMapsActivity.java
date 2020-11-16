@@ -52,7 +52,7 @@ import java.util.Collection;
 
 
 
-//TODO: make sure it constantly updates as the user moves
+//TODO: make sure it constantly updates as the user moves -- add tests
 
 public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
