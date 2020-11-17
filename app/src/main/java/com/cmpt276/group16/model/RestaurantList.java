@@ -33,6 +33,7 @@ public class RestaurantList implements Iterable<Restaurant> {
         return restaurantList;
     }
 
+
     public Restaurant getRestaurant(int index) {
         return restaurantsList.get(index);
     }

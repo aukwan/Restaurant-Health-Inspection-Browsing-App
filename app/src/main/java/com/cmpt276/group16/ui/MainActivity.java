@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         readInspectionData();
         registerClickCallback();
         populateListView();
+
         Intent intent = new Intent(MainActivity.this, RestaurantMapsActivity.class);
         startActivity(intent);
     }
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                             Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(violationLump));
                     restaurantManager.addIssues(sample);
                 }
+                
             }
         } catch (IOException e) {
             Log.wtf("MainActivity", "Error reading datafile on line" + line, e);

@@ -10,6 +10,7 @@
     <string name="tools_ignore_contentdescription">tools:ignore=ContentDescription</string>
     <string name="hazard_rating">Hazard Rating :</string>
     <string name="title_activity_restaurant_maps">Map</string>
+    <string name="go_to">Go to</string>
     <string name="map">Map</string>
     <string name="restaurant_list">Restaurant List</string>
 </resources>
