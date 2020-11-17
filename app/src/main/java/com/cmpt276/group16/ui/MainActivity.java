@@ -64,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         //check for updates
         NewDataHarvester newDataHarvester = new NewDataHarvester();
-        newDataHarvester.checkForPeriodicDataChange(this);
+        newDataHarvester.checkForPeriodicDataChangeForRestaurants(this);
+        newDataHarvester.checkForPeriodicDataChangeForInspections(this);
 
         readRestaurantData();
         readInspectionData();
@@ -190,41 +191,82 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readInspectionData() {
-        InputStream is = getResources().openRawResource(R.raw.inspectionreports);
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(is, StandardCharsets.UTF_8)
-        );
-        try {
-            reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileInputStream fis = null;
+        try{
+            fis = openFileInput("inspectionreports.csv");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            try {
+                reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String line = "";
+            try {
+                while (((line = reader.readLine()) != null)) {
+                    String[] tokens = line.split(",");
+                    String violationLump = "";
+                    for (int k = 5; k < tokens.length - 1; k++) {
+                        violationLump = violationLump + tokens[k];
+                        if (k != tokens.length - 2) {
+                            violationLump += ",";
+                        }
+                    }
+                    Issues sample;
+                    if (tokens[5].length() <= 0) {
+                        sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
+                                Integer.parseInt(tokens[4]), tokens[6], null);
+                    } else {
+                        sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
+                                Integer.parseInt(tokens[4]), tokens[6], formatString(violationLump));
+                    }
+                    restaurantManager.addIssues(sample);
+                }
+            } catch (IOException e) {
+                Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
+                e.printStackTrace();
+            }
         }
-        String line = "";
-        try {
-            while (((line = reader.readLine()) != null)) {
-                String[] tokens = line.split(",");
-                String violationLump = "";
-                for (int k = 6; k < tokens.length; k++) {
-                    violationLump = violationLump + tokens[k];
-                    if (k != tokens.length - 1) {
-                        violationLump += ",";
+        catch (FileNotFoundException fileNotFoundException){
+            Log.i("fileNotFoundForInspectionsCSV", "" + fileNotFoundException);
+
+            InputStream is = getResources().openRawResource(R.raw.inspectionreports);
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(is, StandardCharsets.UTF_8)
+            );
+            try {
+                reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String line = "";
+            try {
+                while (((line = reader.readLine()) != null)) {
+                    String[] tokens = line.split(",");
+                    String violationLump = "";
+                    for (int k = 6; k < tokens.length; k++) {
+                        violationLump = violationLump + tokens[k];
+                        if (k != tokens.length - 1) {
+                            violationLump += ",";
+                        }
+                    }
+                    Issues sample;
+                    if (tokens.length == 6) {
+                        sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
+                                Integer.parseInt(tokens[4]), formatString(tokens[5]), null);
+                        restaurantManager.addIssues(sample);
+                    } else {
+                        sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
+                                Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(violationLump));
+                        restaurantManager.addIssues(sample);
                     }
                 }
-                Issues sample;
-                if (tokens.length == 6) {
-                    sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
-                            Integer.parseInt(tokens[4]), formatString(tokens[5]), null);
-                    restaurantManager.addIssues(sample);
-                } else {
-                    sample = new Issues(formatString(tokens[0]), Integer.parseInt(tokens[1]), formatString(tokens[2]), Integer.parseInt(tokens[3]),
-                            Integer.parseInt(tokens[4]), formatString(tokens[5]), formatString(violationLump));
-                    restaurantManager.addIssues(sample);
-                }
+            } catch (IOException e) {
+                Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
-            e.printStackTrace();
         }
+
     }
 
     //In case in the future he wants us to manually add a restaurant in the software
@@ -350,5 +392,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 }

@@ -2,8 +2,10 @@ package com.cmpt276.group16.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,19 +18,16 @@ import com.cmpt276.group16.R;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import retrofit2.Retrofit;
 
 public class restaurantUpdatePopup extends AppCompatActivity {
 
@@ -36,6 +35,8 @@ public class restaurantUpdatePopup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_update_popup);
+
+        final RestaurantLoadingDialog restaurantLoadingDialog = new RestaurantLoadingDialog(this);
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getRealMetrics(dm);
@@ -60,11 +61,21 @@ public class restaurantUpdatePopup extends AppCompatActivity {
             }
         });
 
+//        Button restaurantCancelUpdateButton = (Button) findViewById(R.id.restaurantCancelUpdateButton);
+//        restaurantCancelUpdateButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                restaurantLoadingDialog.restaurantCancelledUpdateOperation();
+//            }
+//        });
+
         Button buttonUpdate = (Button) findViewById(R.id.restaurantUpdateButton);
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                restaurantLoadingDialog.startLoadingAnimation();
                 String url = getIntent().getStringExtra("RESTAURANT_CSV_URL");
+                final String lastModified = getIntent().getStringExtra("RESTAURANT_CSV_LAST_MODIFIED");
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url)
@@ -82,9 +93,31 @@ public class restaurantUpdatePopup extends AppCompatActivity {
                             String myResponse = response.body().string();
                             FileOutputStream fos = null;
                             try {
-                                fos = openFileOutput("restaurants.csv", MODE_PRIVATE);
-                                fos.write(myResponse.getBytes());
-                                Log.i("SuccessfulSavedData", "Saved to " + getFilesDir() + "/restaurants.csv");
+                                SharedPreferences remoteDataPrefs = getSharedPreferences("periodicDataPreft", Context.MODE_PRIVATE);
+                                boolean restaurantCancelledUpdateOperation = remoteDataPrefs.getBoolean("restaurantCancelledUpdateOperation", false);
+                                if (!restaurantCancelledUpdateOperation){
+                                    fos = openFileOutput("restaurants.csv", MODE_PRIVATE);
+                                    fos.write(myResponse.getBytes());
+                                    //reset the value to false for next time
+                                    SharedPreferences.Editor editor = remoteDataPrefs.edit();
+                                    editor.putBoolean("restaurantCancelledUpdateOperation", false).apply();
+                                    //set the last modified of the remote server file for future update checking
+                                    editor.putString("lastModifiedDateRestaurants", lastModified);
+
+                                    //modify when the last time this has been checked for the 20h logic
+                                    Date endDate = new Date();
+                                    long seconds = endDate.getTime() / 1000; //milliseconds to seconds
+                                    int hours = (int) (seconds / 3600); //seconds to hours
+                                    editor.putInt("lastCheckedHoursForRestaurantsChanged", hours).apply();
+                                    restaurantLoadingDialog.dismissDialog();
+                                    Log.i("SuccessfulSavedData", "Saved to " + getFilesDir() + "/restaurants.csv");
+                                }
+                                else{
+                                    Log.i("SuccessfulSavedDataInterrupted", "Task was interrupted by the user");
+                                    restaurantLoadingDialog.dismissDialog();
+
+                                }
+
 
                             }
                             catch (FileNotFoundException e){
@@ -97,6 +130,7 @@ public class restaurantUpdatePopup extends AppCompatActivity {
                                 if (fos != null){
                                     try{
                                         fos.close();
+                                        finish();
                                     }
                                     catch (IOException e){
                                         e.printStackTrace();
