@@ -1,9 +1,14 @@
 package com.cmpt276.group16.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +27,8 @@ import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,6 +44,7 @@ App entry point, List of all restaurants (Stories.iteration1.1)
 
  */
 public class MainActivity extends AppCompatActivity {
+//    private static final int MY_PERMISSIONS_REQUESTS = 100;
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
 
@@ -47,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //request external file storage permission
+//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+//            ActivityCompat.requestPermissions(this, new String[]{
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            }, MY_PERMISSIONS_REQUESTS);
+//        }
+
+        //check for updates
         NewDataHarvester newDataHarvester = new NewDataHarvester();
         newDataHarvester.checkForPeriodicDataChange(this);
 
@@ -61,12 +77,47 @@ public class MainActivity extends AppCompatActivity {
     //==============
     // functions that we use to handle data
     //==============
-    private String formatString(String unformatted) {
-        String out = unformatted;
-        if (unformatted != null)
-            out = unformatted.substring(1, unformatted.length() - 1);
-        return out;
-    }
+        private String formatString(String unformatted) {
+            String out = unformatted;
+            if (unformatted != null)
+                out = unformatted.substring(1, unformatted.length() - 1);
+            return out;
+        }
+        // Function to remove the element
+        public static String[] removeTheElement(String[] arr,
+                                             int index)
+        {
+            // If the array is empty
+            // or the index is not in array range
+            // return the original array
+            if (arr == null
+                    || index < 0
+                    || index >= arr.length) {
+
+                return arr;
+            }
+
+            // Create another array of size one less
+            String[] anotherArray = new String[arr.length - 1];
+
+            // Copy the elements except the index
+            // from original array to the other array
+            for (int i = 0, k = 0; i < arr.length; i++) {
+
+                // if the index is
+                // the removal element index
+                if (i == index) {
+                    continue;
+                }
+
+                // if the index is not
+                // the removal element index
+                anotherArray[k++] = arr[i];
+            }
+
+            // return the resultant array
+            return anotherArray;
+        }
     //==============
     //==============
     //==============
@@ -81,26 +132,60 @@ public class MainActivity extends AppCompatActivity {
 
     //READ CSV FILE
     private void readRestaurantData() {
-        InputStream is = getResources().openRawResource(R.raw.restaurants);
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(is, StandardCharsets.UTF_8)
-        );
+        FileInputStream fis = null;
         try {
-            reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String line = "";
-        try {
-            while (((line = reader.readLine()) != null)) {
-                String[] tokens = line.split(",");
-                Restaurant sample = new Restaurant(formatString(tokens[0]), formatString(tokens[1]), formatString(tokens[2]), formatString(tokens[3]),
-                        formatString(tokens[4]), Double.parseDouble(formatString(tokens[5])), Double.parseDouble(formatString(tokens[6])));
-                restaurantManager.addRestaurant(sample);
+            fis = openFileInput("restaurants.csv");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            try {
+                reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
-            e.printStackTrace();
+            String line = "";
+            try {
+                while (((line = reader.readLine()) != null)) {
+                    String[] tokens = line.split(",");
+                    //the reason this if statement exists because sometimes the name of the restaurant has a comma in it.
+                    //so it is always wrapped with a " signs
+                    if (tokens[1].startsWith("\"")){
+                        tokens[1] = tokens[1] + tokens[2];
+                        tokens[1] = formatString(tokens[1]);
+                        tokens = removeTheElement(tokens, 2);
+                    }
+                    Log.i("lineErrorMainActivity", "Error reading datafile on line" + line);
+                    Restaurant sample = new Restaurant(tokens[0].trim(), tokens[1], tokens[2], tokens[3],
+                            tokens[4], Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
+                    restaurantManager.addRestaurant(sample);
+                }
+            } catch (IOException e) {
+                Log.i("lineErrorMainActivity", "Error reading datafile on line" + line, e);
+                e.printStackTrace();
+            }
+        }
+        catch (FileNotFoundException fileNotFoundException){
+            Log.i("fileNotFoundForRestauranstCSV", "" + fileNotFoundException);
+            InputStream is = getResources().openRawResource(R.raw.restaurants);
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(is, StandardCharsets.UTF_8)
+            );
+            try {
+                reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String line = "";
+            try {
+                while (((line = reader.readLine()) != null)) {
+                    String[] tokens = line.split(",");
+                    Restaurant sample = new Restaurant(tokens[0].trim(), tokens[1], tokens[2], tokens[3],
+                            tokens[4], Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
+                    restaurantManager.addRestaurant(sample);
+                }
+            } catch (IOException e) {
+                Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
+                e.printStackTrace();
+            }
         }
     }
 

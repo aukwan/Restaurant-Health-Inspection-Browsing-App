@@ -140,6 +140,7 @@ public class NewDataHarvester {
                         //CSVResourceObject = full response/results/resources[0]
 
                         String lastModified = CSVResourceObject.getString("last_modified");
+                        final String url = CSVResourceObject.getString("url");
 
                         SharedPreferences remoteDataPrefs = activity.getSharedPreferences("periodicDataPreft", Context.MODE_PRIVATE);
                         String lastModifiedDateRestaurants = remoteDataPrefs.getString("lastModifiedDateRestaurants","");
@@ -149,6 +150,7 @@ public class NewDataHarvester {
                                 @Override
                                 public void run() {
                                     Intent intent = new Intent(activity, restaurantUpdatePopup.class);
+                                    intent.putExtra("RESTAURANT_CSV_URL", url);
                                     activity.startActivity(intent);
                                 }
                             });
