@@ -29,6 +29,7 @@ import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.model.clusterIconRendered;
 import com.cmpt276.group16.model.restaurantItem;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -53,6 +54,7 @@ import java.util.Collection;
 
 
 //TODO: make sure it constantly updates as the user moves -- add tests
+//TODO: make it follow the user
 
 public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -63,7 +65,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 1254;
     private boolean mLocationPermissionGranted = false;
     private static final float DEFAULT_ZOOM = 15f;
-    private Marker mMarker;
+
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private ClusterManager<restaurantItem> clusterManager;
@@ -104,6 +106,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
         }
     }
+
     private void addItem(){
         for (int i =0; i < restaurantManager.getRestArray().size(); i++){
             position = i;
@@ -188,7 +191,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                 //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
                                 locationRequest = LocationRequest.create();
                                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                                locationRequest.setInterval(20 * 1000);
+                                locationRequest.setInterval(1000);
                                 locationCallback = new LocationCallback() {
                                     @Override
                                     public void onLocationResult(LocationResult locationResult) {
