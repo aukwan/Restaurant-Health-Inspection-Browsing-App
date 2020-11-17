@@ -44,7 +44,7 @@ App entry point, List of all restaurants (Stories.iteration1.1)
 
  */
 public class MainActivity extends AppCompatActivity {
-//    private static final int MY_PERMISSIONS_REQUESTS = 100;
+    private static final int MY_PERMISSIONS_REQUESTS = 100;
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
 
@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //request external file storage permission
-//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-//            ActivityCompat.requestPermissions(this, new String[]{
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-//            }, MY_PERMISSIONS_REQUESTS);
-//        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, MY_PERMISSIONS_REQUESTS);
+        }
 
         //check for updates
         NewDataHarvester newDataHarvester = new NewDataHarvester();
