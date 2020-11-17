@@ -107,6 +107,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         }
     }
 
+    //Adds the restaurant items into a Cluster manager which will be displayed
     private void addItem(){
         for (int i =0; i < restaurantManager.getRestArray().size(); i++){
             position = i;
@@ -141,6 +142,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
         }
     }
+    //Resizes a drawable into a scaled bitmap
     private Bitmap resizeMapIcons(String iconName, int width, int height){
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
@@ -155,6 +157,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         editor.apply();
     }
 
+    //sets up the cluster manager
     private void setUpClusterer(){
         clusterManager = new ClusterManager<restaurantItem>(RestaurantMapsActivity.this, mMap);
         clusterManager.setRenderer(new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager));
@@ -171,6 +174,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
     }
 
+    //Gets current device location
     private void getDeviceLocation(){
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(RestaurantMapsActivity.this);
         try{
@@ -188,7 +192,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                 moveCamera(currLatiAndLong, DEFAULT_ZOOM);
                             }
                             else {
-                                //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+                               //Updates the location from the location device and sets an interval
                                 locationRequest = LocationRequest.create();
                                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                                 locationRequest.setInterval(1000);
@@ -211,6 +215,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                         }
                                     }
                                 };
+                                //location updater
                                 mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                             }
                         }
@@ -224,12 +229,13 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
 
 
-
+    //moves camera
     private void moveCamera(LatLng latLng, float zoom){
         Log.d(TAG, "moveCamera: moving the camera to : lat: " + latLng.latitude + " lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
+    //Gets the location permision
     private void getLocationPermission(){
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -250,6 +256,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         }
     }
 
+    //Initializes the map
     private void initMap(){
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
