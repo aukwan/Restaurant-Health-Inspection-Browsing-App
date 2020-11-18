@@ -41,6 +41,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -48,6 +49,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
@@ -65,18 +67,17 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private static final int LOCATION_PERMISSIONS_REQUEST_CODE = 1254;
     private boolean mLocationPermissionGranted = false;
     private static final float DEFAULT_ZOOM = 15f;
-    private Marker mMarker;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-
+    private Marker mMarker;
     private ClusterManager<restaurantItem> clusterManager;
 
     private final RestaurantList restaurantManager = RestaurantList.getInstance();
-    private int position;
+    private int mPosition;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-    private int restaurantIndex;
+    private int restaurantIndex = -1;
     private clusterIconRendered mRenderer;
-    private ArrayList<restaurantItem> restaurantItemArrayList = new ArrayList<restaurantItem>();
+
 
 
     /**
@@ -104,7 +105,6 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             //mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
             clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
-
             //sets the markers for all the locations
             addItem();
 
@@ -115,11 +115,6 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                 Log.e(TAG, "latitude for index " + latitude + "longitude for index " + longitude);
                 moveCamera(latLng, DEFAULT_ZOOM);
 
-                //must have an explicit item passed into get market (pass by reference)
-                Marker marker = mRenderer.getMarker(restaurantItemArrayList.get(restaurantIndex));
-                marker.showInfoWindow();
-
-
             } else {
                 getDeviceLocation();
             }
@@ -129,7 +124,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     }
     private void addItem(){
         for (int i =0; i < restaurantManager.getRestArray().size(); i++){
-            position = i;
+            mPosition = i;
             LatLng latLng = new LatLng(restaurantManager.getRestArray().get(i).getLatitude(), restaurantManager.getRestArray().get(i).getLongitude());
             Restaurant currentRestaurant = restaurantManager.getRestArray().get(i);
             BitmapDescriptor mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("greendot", 100, 100));
@@ -146,8 +141,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                     mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("yellowdot", 100, 100));
                 }
             }
-            restaurantItem item = new restaurantItem(latLng, mTitle, mSnippet, mIcon, position);
-            restaurantItemArrayList.add(item);
+
+            restaurantItem item = new restaurantItem(latLng, mTitle, mSnippet, mIcon, mPosition);
             clusterManager.addItem(item);
             clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<restaurantItem>() {
                 @Override
@@ -162,6 +157,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
         }
     }
+
     private Bitmap resizeMapIcons(String iconName, int width, int height){
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
@@ -210,16 +206,18 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                         public void onSuccess(Location location) {
                             Log.d(TAG, "onComplete: found location");
                             if (location != null) {
+
                                 Double wayLatitude = location.getLatitude();
                                 Double wayLongitude = location.getLongitude();
                                 LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
+
                                 moveCamera(currLatiAndLong, DEFAULT_ZOOM);
                             }
                             else {
                                 //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
                                 locationRequest = LocationRequest.create();
                                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                                locationRequest.setInterval(20 * 1000);
+                                locationRequest.setInterval(1000);
                                 locationCallback = new LocationCallback() {
                                     @Override
                                     public void onLocationResult(LocationResult locationResult) {

@@ -1,6 +1,8 @@
 package com.cmpt276.group16.model;
 
 import android.content.Context;
+import android.util.Log;
+
 
 import androidx.annotation.NonNull;
 
@@ -11,21 +13,27 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
+import java.util.ArrayList;
+
+
 public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> {
+
     public clusterIconRendered(Context context, GoogleMap map, ClusterManager<restaurantItem> clusterManager) {
         super(context, map, clusterManager);
+
     }
+
+
     @Override
     protected void onBeforeClusterItemRendered(restaurantItem item, MarkerOptions markerOptions){
+        super.onBeforeClusterItemRendered(item, markerOptions);
         markerOptions.icon(item.getIcon());
         markerOptions.snippet(item.getSnippet());
         markerOptions.title(item.getTitle());
-        super.onBeforeClusterItemRendered(item, markerOptions);
+
     }
 
-    @Override
-    protected void onClusterItemRendered(@NonNull restaurantItem clusterItem, @NonNull Marker marker) {
-        marker.showInfoWindow();
-        super.onClusterItemRendered(clusterItem, marker);
-    }
+
+
+
 }
