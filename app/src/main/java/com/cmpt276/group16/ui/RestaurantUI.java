@@ -194,6 +194,7 @@ public class RestaurantUI extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RestaurantUI.this, RestaurantMapsActivity.class);
+                intent.putExtra("restaurant index", restaurantIndex);
                 startActivity(intent);
             }
         });

@@ -9,6 +9,7 @@ import android.Manifest;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,14 +47,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.ClusterManager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 
-
 //TODO: make sure it constantly updates as the user moves -- add tests
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -73,6 +74,10 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private int position;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+    private int restaurantIndex;
+    private clusterIconRendered mRenderer;
+    private ArrayList<restaurantItem> restaurantItemArrayList = new ArrayList<restaurantItem>();
+
 
     /**
      * Manipulates the map once available.
@@ -90,7 +95,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         if (mLocationPermissionGranted) {
             setUpClusterer();
             //sets user location:
-            getDeviceLocation();
+
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -103,10 +108,26 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             //sets the markers for all the locations
             addItem();
 
+            if (restaurantIndex != -1) {
+                Double latitude = restaurantManager.getRestaurant(restaurantIndex).getLatitude();
+                Double longitude = restaurantManager.getRestaurant(restaurantIndex).getLongitude();
+                LatLng latLng = new LatLng(latitude, longitude);
+                Log.e(TAG, "latitude for index " + latitude + "longitude for index " + longitude);
+                moveCamera(latLng, DEFAULT_ZOOM);
+                Marker marker = mRenderer.getMarker(restaurantItemArrayList.get(restaurantIndex));
+                marker.showInfoWindow();
+
+
+            } else {
+                getDeviceLocation();
+            }
+
+
         }
     }
-    private void addItem(){
-        for (int i =0; i < restaurantManager.getRestArray().size(); i++){
+
+    private void addItem() {
+        for (int i = 0; i < restaurantManager.getRestArray().size(); i++) {
             position = i;
             LatLng latLng = new LatLng(restaurantManager.getRestArray().get(i).getLatitude(), restaurantManager.getRestArray().get(i).getLongitude());
             Restaurant currentRestaurant = restaurantManager.getRestArray().get(i);
@@ -124,8 +145,9 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                     mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("yellowdot", 100, 100));
                 }
             }
-
-            clusterManager.addItem(new restaurantItem(latLng,mTitle, mSnippet, mIcon, position));
+            restaurantItem item = new restaurantItem(latLng, mTitle, mSnippet, mIcon, position);
+            restaurantItemArrayList.add(item);
+            clusterManager.addItem(item);
             clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<restaurantItem>() {
                 @Override
                 public void onClusterItemInfoWindowClick(restaurantItem item) {
@@ -139,7 +161,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
         }
     }
-    private Bitmap resizeMapIcons(String iconName, int width, int height){
+
+    private Bitmap resizeMapIcons(String iconName, int width, int height) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
@@ -153,9 +176,10 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         editor.apply();
     }
 
-    private void setUpClusterer(){
+    private void setUpClusterer() {
         clusterManager = new ClusterManager<restaurantItem>(RestaurantMapsActivity.this, mMap);
-        clusterManager.setRenderer(new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager));
+        mRenderer = new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager);
+        clusterManager.setRenderer(mRenderer);
         mMap.setOnCameraIdleListener(clusterManager);
         mMap.setOnMarkerClickListener(clusterManager);
     }
@@ -166,13 +190,19 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_maps);
         getLocationPermission();
+        registerClickCallback();
+
+        Intent intent = getIntent();
+        restaurantIndex = intent.getIntExtra("restaurant index", -1);
+        Log.e(TAG, "Restaurant Index: " + restaurantIndex);
+
 
     }
 
-    private void getDeviceLocation(){
+    private void getDeviceLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(RestaurantMapsActivity.this);
 
-        try{
+        try {
             if (mLocationPermissionGranted) {
                 final Task<Location> location = mFusedLocationProviderClient.getLastLocation();
                 if (location != null) {
@@ -185,8 +215,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                 Double wayLongitude = location.getLongitude();
                                 LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
                                 moveCamera(currLatiAndLong, DEFAULT_ZOOM);
-                            }
-                            else {
+                            } else {
                                 //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
                                 locationRequest = LocationRequest.create();
                                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -203,8 +232,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                                 Double wayLongitude = location.getLongitude();
                                                 LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
                                                 moveCamera(currLatiAndLong, DEFAULT_ZOOM);
-                                            }
-                                            else {
+                                            } else {
                                                 Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
                                             }
                                         }
@@ -216,52 +244,51 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                     });
                 }
             }
-        }catch(SecurityException e){
+        } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
 
 
-
-    private void moveCamera(LatLng latLng, float zoom){
+    private void moveCamera(LatLng latLng, float zoom) {
         Log.d(TAG, "moveCamera: moving the camera to : lat: " + latLng.latitude + " lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
-    private void getLocationPermission(){
+    private void getLocationPermission() {
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
                 initMap();
-            }else {
-                ActivityCompat.requestPermissions(this,permissions,
+            } else {
+                ActivityCompat.requestPermissions(this, permissions,
                         LOCATION_PERMISSIONS_REQUEST_CODE);
             }
-        }else {
-            ActivityCompat.requestPermissions(this,permissions,
+        } else {
+            ActivityCompat.requestPermissions(this, permissions,
                     LOCATION_PERMISSIONS_REQUEST_CODE);
         }
     }
 
-    private void initMap(){
+    private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(RestaurantMapsActivity.this);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         mLocationPermissionGranted = false;
-        switch(requestCode){
-            case LOCATION_PERMISSIONS_REQUEST_CODE:{
-                if (grantResults.length > 0){
-                    for (int i =0; i < grantResults.length; i++){
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED){
+        switch (requestCode) {
+            case LOCATION_PERMISSIONS_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < grantResults.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                             mLocationPermissionGranted = false;
                             break;
                         }
@@ -283,7 +310,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                     case R.id.action_restaurant_list:
                         finish();
                         return true;
-                    default: return true;
+                    default:
+                        return true;
                 }
             }
         });
