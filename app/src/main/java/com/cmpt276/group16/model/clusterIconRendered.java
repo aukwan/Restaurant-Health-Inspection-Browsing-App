@@ -2,6 +2,8 @@ package com.cmpt276.group16.model;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -21,4 +23,9 @@ public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> 
         super.onBeforeClusterItemRendered(item, markerOptions);
     }
 
+    @Override
+    protected void onClusterItemRendered(@NonNull restaurantItem clusterItem, @NonNull Marker marker) {
+        marker.showInfoWindow();
+        super.onClusterItemRendered(clusterItem, marker);
+    }
 }
