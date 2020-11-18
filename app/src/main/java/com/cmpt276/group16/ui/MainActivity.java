@@ -66,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //check for updates
-        NewDataHarvester newDataHarvester = new NewDataHarvester();
-        newDataHarvester.checkForPeriodicDataChangeForRestaurants(this);
-        newDataHarvester.checkForPeriodicDataChangeForInspections(this);
+//        NewDataHarvester newDataHarvester = new NewDataHarvester();
+//        newDataHarvester.checkForPeriodicDataChangeForRestaurants(this);
+//        newDataHarvester.checkForPeriodicDataChangeForInspections(this);
 
         readRestaurantData();
         readInspectionData();
