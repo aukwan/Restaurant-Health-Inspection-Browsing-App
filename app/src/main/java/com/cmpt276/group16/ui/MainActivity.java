@@ -1,14 +1,7 @@
 package com.cmpt276.group16.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
@@ -212,15 +206,22 @@ public class MainActivity extends AppCompatActivity {
                             violationLump += ",";
                         }
                     }
-                    Issues sample;
-                    if (tokens[5].length() <= 0) {
-                        sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
-                                Integer.parseInt(tokens[4]), tokens[6], null);
-                    } else {
-                        sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
-                                Integer.parseInt(tokens[4]), tokens[6], formatString(violationLump));
+                    if(tokens.length!=0) {
+                        Issues sample;
+                        if (tokens.length == 5) {
+                            sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
+                                    Integer.parseInt(tokens[4]), "Low", null);
+                        } else if (tokens[5].length() <= 0) {
+                            Log.i("lineErrorMainActivity", "2: Error reading datafile on line" + line);
+                            sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
+                                    Integer.parseInt(tokens[4]), tokens[6], null);
+                        } else {
+                            Log.i("lineErrorMainActivity", "1: Error reading datafile on line" + line);
+                            sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
+                                    Integer.parseInt(tokens[4]), tokens[6], formatString(violationLump));
+                        }
+                        restaurantManager.addIssues(sample);
                     }
-                    restaurantManager.addIssues(sample);
                 }
             } catch (IOException e) {
                 Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
