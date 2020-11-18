@@ -114,6 +114,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                 LatLng latLng = new LatLng(latitude, longitude);
                 Log.e(TAG, "latitude for index " + latitude + "longitude for index " + longitude);
                 moveCamera(latLng, DEFAULT_ZOOM);
+
+                //must have an explicit item passed into get market (pass by reference)
                 Marker marker = mRenderer.getMarker(restaurantItemArrayList.get(restaurantIndex));
                 marker.showInfoWindow();
 
