@@ -33,7 +33,11 @@ public class Issues implements Comparable<Issues> {
             String[] violations = violationLump.split("\\|");
             for (int k = 0; k < violations.length; k++) {
                 String[] temp = violations[k].split(",");
-                Violations violation = new Violations(Integer.parseInt(temp[0]), temp[1], temp[2], temp[3]);
+                String temp2=temp[2];
+                for(int j=3;j<temp.length-1;j++){
+                    temp2+=","+temp[j];
+                }
+                Violations violation = new Violations(Integer.parseInt(temp[0]), temp[1], temp2, temp[temp.length-1]);
                 violationsList.add(violation);
             }
         }
