@@ -9,6 +9,13 @@
     <string name="inspection_routine">Inspection Type</string>
     <string name="tools_ignore_contentdescription">tools:ignore=ContentDescription</string>
     <string name="hazard_rating">Hazard Rating :</string>
-    <string name="title_activity_restaurant_maps">Map</string>
-    <string name="go_to">Go to</string>
+    <string name="title_activity_update_popup">updatePopup</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>
