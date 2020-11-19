@@ -174,7 +174,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
     private void setUpClusterer(){
         clusterManager = new ClusterManager<restaurantItem>(RestaurantMapsActivity.this, mMap);
-        mRenderer = new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager);
+        mRenderer = new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager, restaurantIndex);
         clusterManager.setRenderer(mRenderer);
         mMap.setOnCameraIdleListener(clusterManager);
         mMap.setOnMarkerClickListener(clusterManager);

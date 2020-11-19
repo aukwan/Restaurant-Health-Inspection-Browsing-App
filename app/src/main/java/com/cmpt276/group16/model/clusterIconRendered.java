@@ -2,6 +2,7 @@ package com.cmpt276.group16.model;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 
 import androidx.annotation.NonNull;
@@ -17,10 +18,10 @@ import java.util.ArrayList;
 
 
 public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> {
-
-    public clusterIconRendered(Context context, GoogleMap map, ClusterManager<restaurantItem> clusterManager) {
+    private int index;
+    public clusterIconRendered(Context context, GoogleMap map, ClusterManager<restaurantItem> clusterManager, int index) {
         super(context, map, clusterManager);
-
+        this.index = index;
     }
 
 
@@ -30,10 +31,19 @@ public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> 
         markerOptions.icon(item.getIcon());
         markerOptions.snippet(item.getSnippet());
         markerOptions.title(item.getTitle());
-
     }
 
 
+    @Override
+    protected void onClusterItemRendered(@NonNull restaurantItem clusterItem, @NonNull Marker marker) {
+        super.onClusterItemRendered(clusterItem, marker);
+        if (index != -1){
+            if (index == clusterItem.getTag()){
+                getMarker(clusterItem).showInfoWindow();
+                index = -1;
+            }
+        }
+    }
 
 
 }
