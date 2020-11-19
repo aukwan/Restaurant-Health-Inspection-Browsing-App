@@ -1,8 +1,6 @@
-package com.cmpt276.group16.model;
+package com.cmpt276.group16.model.Clusters;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 
 
 import androidx.annotation.NonNull;
@@ -10,11 +8,8 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-
-import java.util.ArrayList;
 
 
 public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> {

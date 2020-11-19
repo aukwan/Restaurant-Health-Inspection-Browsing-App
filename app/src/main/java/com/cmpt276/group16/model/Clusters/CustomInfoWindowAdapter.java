@@ -1,4 +1,4 @@
-package com.cmpt276.group16.model;
+package com.cmpt276.group16.model.Clusters;
 
 import android.content.Context;
 import android.util.Log;

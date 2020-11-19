@@ -52,7 +52,7 @@
             android:name=".ui.restaurantUpdatePopup"
             android:theme="@style/AppTheme.updatePopup" />
         <activity
-            android:name=".ui.InspectionUI"
+            android:name=".ui.popups.InspectionUI"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.RestaurantUI"
