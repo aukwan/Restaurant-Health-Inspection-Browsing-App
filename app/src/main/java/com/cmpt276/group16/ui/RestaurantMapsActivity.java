@@ -58,7 +58,6 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private boolean mLocationPermissionGranted = false;
     private static final float DEFAULT_ZOOM = 15f;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Marker mMarker;
     private ClusterManager<restaurantItem> clusterManager;
 
     private final RestaurantList restaurantManager = RestaurantList.getInstance();

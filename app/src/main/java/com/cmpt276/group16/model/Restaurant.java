@@ -15,7 +15,6 @@ public class Restaurant implements Comparable<Restaurant> {
     private final String facType;
     private final Double latitude;
     private final Double longitude;
-    private String violationDump;
     private String mostRecentHazardLevels = "Low";
 
     //private int drawableIndex
