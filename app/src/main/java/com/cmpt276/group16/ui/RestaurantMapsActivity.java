@@ -21,11 +21,13 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.CustomInfoWindowAdapter;
 import com.cmpt276.group16.model.Issues;
+import com.cmpt276.group16.model.NewDataHarvester;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.model.clusterIconRendered;
@@ -52,6 +54,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -78,6 +87,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private int restaurantIndex = -1;
     private clusterIconRendered mRenderer;
 
+    private boolean toggleCameraFollow = false;
 
 
     /**
@@ -102,19 +112,40 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             }
             mMap.setMyLocationEnabled(true);
             //gui textbox
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    if (toggleCameraFollow == false) {
+                        toggleCameraFollow = true;
+                        requestLocationUpdates(true);
+                    }
+                    Toast.makeText(RestaurantMapsActivity.this, "Toggle Camera follow on", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+            });
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    if (toggleCameraFollow == true){
+                        requestLocationUpdates(false);
+                        Toast.makeText(RestaurantMapsActivity.this, "Toggle Camera follow off", Toast.LENGTH_SHORT).show();
+                        toggleCameraFollow = false;
+                    }
+                }
+            });
             //mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
             clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
             //sets the markers for all the locations
             addItem();
             getDeviceLocation();
-
-
-
         }
     }
-    private void addItem(){
-        for (int i =0; i < restaurantManager.getRestArray().size(); i++){
+
+
+    private void addItem() {
+        for (int i = 0; i < restaurantManager.getRestArray().size(); i++) {
             mPosition = i;
             LatLng latLng = new LatLng(restaurantManager.getRestArray().get(i).getLatitude(), restaurantManager.getRestArray().get(i).getLongitude());
             Restaurant currentRestaurant = restaurantManager.getRestArray().get(i);
@@ -149,7 +180,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         }
     }
 
-    private Bitmap resizeMapIcons(String iconName, int width, int height){
+    private Bitmap resizeMapIcons(String iconName, int width, int height) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
@@ -163,7 +194,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         editor.apply();
     }
 
-    private void setUpClusterer(){
+    private void setUpClusterer() {
         clusterManager = new ClusterManager<restaurantItem>(RestaurantMapsActivity.this, mMap);
         mRenderer = new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager, restaurantIndex);
         clusterManager.setRenderer(mRenderer);
@@ -177,6 +208,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_maps);
         getLocationPermission();
+
         registerClickCallback();
 
         Intent intent = getIntent();
@@ -186,6 +218,43 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
     }
 
+    private void requestLocationUpdates(boolean isRequested) {
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(RestaurantMapsActivity.this);
+        if (mLocationPermissionGranted) {
+            if (isRequested) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                final Task<Location> location = mFusedLocationProviderClient.getLastLocation();
+                //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+                locationRequest = LocationRequest.create();
+                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                locationRequest.setInterval(500);
+                locationCallback = new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        if (locationResult == null) {
+                            return;
+                        }
+                        for (Location location : locationResult.getLocations()) {
+                            if (location != null) {
+                                Double wayLatitude = location.getLatitude();
+                                Double wayLongitude = location.getLongitude();
+                                LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
+                                moveCamera(currLatiAndLong, DEFAULT_ZOOM);
+                            } else {
+                                Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                };
+                mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+            } else {
+                mFusedLocationProviderClient.removeLocationUpdates(locationCallback);
+
+            }
+        }
+    }
     private void getDeviceLocation(){
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(RestaurantMapsActivity.this);
         try{
@@ -210,12 +279,11 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                     LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
                                     moveCamera(currLatiAndLong, DEFAULT_ZOOM);
                                 }
-                            }
-                            else {
-                                //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
+                                onRestart();
+                            } else {
                                 locationRequest = LocationRequest.create();
                                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                                locationRequest.setInterval(20 * 1000);
+                                locationRequest.setInterval(500);
                                 locationCallback = new LocationCallback() {
                                     @Override
                                     public void onLocationResult(LocationResult locationResult) {
@@ -228,8 +296,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                                 Double wayLongitude = location.getLongitude();
                                                 LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
                                                 moveCamera(currLatiAndLong, DEFAULT_ZOOM);
-                                            }
-                                            else {
+                                            } else {
                                                 Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
                                             }
                                         }
@@ -238,13 +305,16 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                                 mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                             }
                         }
+
                     });
+
                 }
             }
         }catch(SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
+
 
 
 
@@ -310,6 +380,9 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                 switch (item.getItemId()) {
                     case R.id.action_restaurant_list:
                         finish();
+                        Intent intent = new Intent(RestaurantMapsActivity.this, MainActivity.class);
+                        startActivity(intent);
+
                         return true;
                     default:
                         return true;
