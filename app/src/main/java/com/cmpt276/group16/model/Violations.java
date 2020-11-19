@@ -13,7 +13,7 @@ public class Violations {
     //You could choose during parsing if you want the repeat to be a boolean or not
     private final String repeat;
 
-    public Violations(int violNum, String severity, String description, String repeat){
+    public Violations(int violNum, String severity, String description, String repeat) {
         this.violNum = violNum;
         this.severity = severity;
         this.description = description;

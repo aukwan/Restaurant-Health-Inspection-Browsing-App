@@ -24,9 +24,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+/*
+        Activity that checks updates and reads in the csv data files  (Stories.iteration1) and  (Stories.iteration2)
+ */
+
 public class ReadActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUESTS = 100;
     private RestaurantList restaurantManager = RestaurantList.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +39,7 @@ public class ReadActivity extends AppCompatActivity {
 
 
         //request external file storage permission
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, MY_PERMISSIONS_REQUESTS);
@@ -61,10 +66,10 @@ public class ReadActivity extends AppCompatActivity {
             out = unformatted.substring(1, unformatted.length() - 1);
         return out;
     }
+
     // Function to remove the element
     public static String[] removeTheElement(String[] arr,
-                                            int index)
-    {
+                                            int index) {
         // If the array is empty
         // or the index is not in array range
         // return the original array
@@ -126,7 +131,7 @@ public class ReadActivity extends AppCompatActivity {
                     String[] tokens = line.split(",");
                     //the reason this if statement exists because sometimes the name of the restaurant has a comma in it.
                     //so it is always wrapped with a " signs
-                    if (tokens[1].startsWith("\"")){
+                    if (tokens[1].startsWith("\"")) {
                         tokens[1] = tokens[1] + tokens[2];
                         tokens[1] = formatString(tokens[1]);
                         tokens = removeTheElement(tokens, 2);
@@ -140,8 +145,7 @@ public class ReadActivity extends AppCompatActivity {
                 Log.i("lineErrorMainActivity", "Error reading datafile on line" + line, e);
                 e.printStackTrace();
             }
-        }
-        catch (FileNotFoundException fileNotFoundException){
+        } catch (FileNotFoundException fileNotFoundException) {
             Log.i("fileNotFoundForRestauranstCSV", "" + fileNotFoundException);
             InputStream is = getResources().openRawResource(R.raw.restaurants);
             BufferedReader reader = new BufferedReader(
@@ -169,7 +173,7 @@ public class ReadActivity extends AppCompatActivity {
 
     private void readInspectionData() {
         FileInputStream fis = null;
-        try{
+        try {
             fis = openFileInput("inspectionreports.csv");
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader reader = new BufferedReader(isr);
@@ -189,7 +193,7 @@ public class ReadActivity extends AppCompatActivity {
                             violationLump += ",";
                         }
                     }
-                    if(tokens.length!=0) {
+                    if (tokens.length != 0) {
                         Issues sample;
                         if (tokens.length == 5) {
                             sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
@@ -197,11 +201,11 @@ public class ReadActivity extends AppCompatActivity {
                         } else if (tokens[5].length() <= 0) {
                             Log.i("lineErrorMainActivity", "2: Error reading datafile on line" + line);
                             sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
-                                    Integer.parseInt(tokens[4]), tokens[tokens.length-1], null);
+                                    Integer.parseInt(tokens[4]), tokens[tokens.length - 1], null);
                         } else {
                             Log.i("lineErrorMainActivity", "1: Error reading datafile on line" + line);
                             sample = new Issues(tokens[0], Integer.parseInt(tokens[1]), tokens[2], Integer.parseInt(tokens[3]),
-                                    Integer.parseInt(tokens[4]), tokens[tokens.length-1], formatString(violationLump));
+                                    Integer.parseInt(tokens[4]), tokens[tokens.length - 1], formatString(violationLump));
                         }
                         restaurantManager.addIssues(sample);
                     }
@@ -210,8 +214,7 @@ public class ReadActivity extends AppCompatActivity {
                 Log.wtf("MainActivity", "Error reading datafile on line" + line, e);
                 e.printStackTrace();
             }
-        }
-        catch (FileNotFoundException fileNotFoundException){
+        } catch (FileNotFoundException fileNotFoundException) {
             Log.i("fileNotFoundForInspectionsCSV", "" + fileNotFoundException);
 
             InputStream is = getResources().openRawResource(R.raw.inspectionreports);

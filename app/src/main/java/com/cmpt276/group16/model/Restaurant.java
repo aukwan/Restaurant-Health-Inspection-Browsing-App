@@ -3,6 +3,10 @@ package com.cmpt276.group16.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/*
+        Restaurant class Object  (Stories.iteration1)
+ */
+
 public class Restaurant implements Comparable<Restaurant> {
     private final String trackingNumber;
     private final String name;
@@ -26,8 +30,14 @@ public class Restaurant implements Comparable<Restaurant> {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-    public String getMostRecentHazardLevels(){ return mostRecentHazardLevels;}
-    public void setMostRecentHazardLevels(String hazardLevels){mostRecentHazardLevels = hazardLevels;}
+
+    public String getMostRecentHazardLevels() {
+        return mostRecentHazardLevels;
+    }
+
+    public void setMostRecentHazardLevels(String hazardLevels) {
+        mostRecentHazardLevels = hazardLevels;
+    }
 
 
     public void addIssue(Issues issue) {

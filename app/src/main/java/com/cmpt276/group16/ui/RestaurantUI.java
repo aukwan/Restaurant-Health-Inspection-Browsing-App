@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.RestaurantList;
-import com.cmpt276.group16.ui.popups.InspectionUI;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

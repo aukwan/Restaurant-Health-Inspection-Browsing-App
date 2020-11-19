@@ -20,8 +20,8 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void addRestaurant(){
-        RestaurantList tester= RestaurantList.getInstance();
+    public void addRestaurant() {
+        RestaurantList tester = RestaurantList.getInstance();
         String trackingNumber = "SDFO-8HKP7E";
         String name = "Pattullo A&W";
         String physicalAddress = "12808 King George Blvd";
@@ -57,7 +57,6 @@ public class ExampleUnitTest {
         hazardRated = "Low";
         Issues issue2 = new Issues(trackingNumber, inspectionDate, inspectionType, NumCritical, NumNonCritical, hazardRated, violLump);
         tester.addIssues(issue2);
-
 
 
     }

@@ -44,7 +44,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.ClusterManager;
 
 
-//TODO: make sure it constantly updates as the user moves -- add tests
+/*
+            Restaurant map activity that displays a Google Map using the Google Map API(Stories.iteration2)
+ */
 
 public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -107,7 +109,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-                    if (toggleCameraFollow == true){
+                    if (toggleCameraFollow == true) {
                         requestLocationUpdates(false);
                         Toast.makeText(RestaurantMapsActivity.this, "Toggle Camera follow off", Toast.LENGTH_SHORT).show();
                         toggleCameraFollow = false;
@@ -234,9 +236,10 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             }
         }
     }
-    private void getDeviceLocation(){
+
+    private void getDeviceLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(RestaurantMapsActivity.this);
-        try{
+        try {
             if (mLocationPermissionGranted) {
                 final Task<Location> location = mFusedLocationProviderClient.getLastLocation();
 
@@ -289,22 +292,20 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
 
                 }
             }
-        }catch(SecurityException e){
+        } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
 
 
-
-
     //moves camera
-    private void moveCamera(LatLng latLng, float zoom){
+    private void moveCamera(LatLng latLng, float zoom) {
         Log.d(TAG, "moveCamera: moving the camera to : lat: " + latLng.latitude + " lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     //Gets the location permision
-    private void getLocationPermission(){
+    private void getLocationPermission() {
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
 
@@ -325,7 +326,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     }
 
     //Initializes the map
-    private void initMap(){
+    private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(RestaurantMapsActivity.this);

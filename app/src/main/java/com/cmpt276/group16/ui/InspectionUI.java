@@ -1,4 +1,4 @@
-package com.cmpt276.group16.ui.popups;
+package com.cmpt276.group16.ui;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;

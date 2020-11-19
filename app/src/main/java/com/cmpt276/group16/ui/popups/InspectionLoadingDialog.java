@@ -1,4 +1,4 @@
-package com.cmpt276.group16.ui;
+package com.cmpt276.group16.ui.popups;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,11 +10,15 @@ import android.widget.Button;
 
 import com.cmpt276.group16.R;
 
-public class RestaurantLoadingDialog {
+/*
+        Displays an Inspection Loading Dialog  (Stories.iteration2)
+ */
+
+public class InspectionLoadingDialog {
     private Activity activity;
     private AlertDialog dialog;
 
-    RestaurantLoadingDialog(Activity myActivity) {
+    InspectionLoadingDialog(Activity myActivity) {
         activity = myActivity;
     }
 
@@ -23,12 +27,12 @@ public class RestaurantLoadingDialog {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
-        View exp = inflater.inflate(R.layout.restaurant_loading_custom_dialog, null);
-        Button restaurantCancelUpdateButton = (Button) exp.findViewById(R.id.restaurantCancelUpdateButton);
-        restaurantCancelUpdateButton.setOnClickListener(new View.OnClickListener() {
+        View exp = inflater.inflate(R.layout.inspection_loading_custom_dialog, null);
+        Button inspectionCancelUpdateButton = (Button) exp.findViewById(R.id.inspectionCancelUpdateButton);
+        inspectionCancelUpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                restaurantCancelledUpdateOperation();
+                inspectionCancelledUpdateOperation();
             }
         });
         builder.setView(exp);
@@ -49,11 +53,10 @@ public class RestaurantLoadingDialog {
         dialog.dismiss();
     }
 
-    void restaurantCancelledUpdateOperation(){
+    void inspectionCancelledUpdateOperation() {
         SharedPreferences remoteDataPrefs = activity.getSharedPreferences("periodicDataPreft", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = remoteDataPrefs.edit();
-        editor.putBoolean("restaurantCancelledUpdateOperation", true).apply();
+        editor.putBoolean("inspectionCancelledUpdateOperation", true).apply();
         dismissDialog();
-
     }
 }

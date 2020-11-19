@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/popup_background"
-    tools:context=".ui.restaurantUpdatePopup">
+    tools:context=".ui.popups.restaurantUpdatePopup">
 
     <TextView
         android:id="@+id/newDataTitle"

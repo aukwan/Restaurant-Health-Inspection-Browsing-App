@@ -1,11 +1,10 @@
-package com.cmpt276.group16.ui;
+package com.cmpt276.group16.ui.popups;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,6 +27,10 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+/*
+        Displays a Restaurant Update Popup  (Stories.iteration2)
+ */
 
 public class restaurantUpdatePopup extends AppCompatActivity {
 
@@ -89,13 +92,13 @@ public class restaurantUpdatePopup extends AppCompatActivity {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             String myResponse = response.body().string();
                             FileOutputStream fos = null;
                             try {
                                 SharedPreferences remoteDataPrefs = getSharedPreferences("periodicDataPreft", Context.MODE_PRIVATE);
                                 boolean restaurantCancelledUpdateOperation = remoteDataPrefs.getBoolean("restaurantCancelledUpdateOperation", false);
-                                if (!restaurantCancelledUpdateOperation){
+                                if (!restaurantCancelledUpdateOperation) {
                                     fos = openFileOutput("restaurants.csv", MODE_PRIVATE);
                                     fos.write(myResponse.getBytes());
                                     //reset the value to false for next time
@@ -111,28 +114,23 @@ public class restaurantUpdatePopup extends AppCompatActivity {
                                     editor.putInt("lastCheckedHoursForRestaurantsChanged", hours).apply();
                                     restaurantLoadingDialog.dismissDialog();
                                     Log.i("SuccessfulSavedData", "Saved to " + getFilesDir() + "/restaurants.csv");
-                                }
-                                else{
+                                } else {
                                     Log.i("SuccessfulSavedDataInterrupted", "Task was interrupted by the user");
                                     restaurantLoadingDialog.dismissDialog();
 
                                 }
 
 
-                            }
-                            catch (FileNotFoundException e){
+                            } catch (FileNotFoundException e) {
                                 e.printStackTrace();
-                            }
-                            catch (IOException e){
+                            } catch (IOException e) {
                                 e.printStackTrace();
-                            }
-                            finally {
-                                if (fos != null){
-                                    try{
+                            } finally {
+                                if (fos != null) {
+                                    try {
                                         fos.close();
                                         finish();
-                                    }
-                                    catch (IOException e){
+                                    } catch (IOException e) {
                                         e.printStackTrace();
                                     }
 

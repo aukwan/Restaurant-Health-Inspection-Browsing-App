@@ -12,8 +12,13 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 
+/*
+        Class used to render the cluster items (Stories.iteration2)
+
+ */
 public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> {
     private int index;
+
     public clusterIconRendered(Context context, GoogleMap map, ClusterManager<restaurantItem> clusterManager, int index) {
         super(context, map, clusterManager);
         this.index = index;
@@ -21,7 +26,7 @@ public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> 
 
 
     @Override
-    protected void onBeforeClusterItemRendered(restaurantItem item, MarkerOptions markerOptions){
+    protected void onBeforeClusterItemRendered(restaurantItem item, MarkerOptions markerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions);
         markerOptions.icon(item.getIcon());
         markerOptions.snippet(item.getSnippet());
@@ -32,8 +37,8 @@ public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> 
     @Override
     protected void onClusterItemRendered(@NonNull restaurantItem clusterItem, @NonNull Marker marker) {
         super.onClusterItemRendered(clusterItem, marker);
-        if (index != -1){
-            if (index == clusterItem.getTag()){
+        if (index != -1) {
+            if (index == clusterItem.getTag()) {
                 getMarker(clusterItem).showInfoWindow();
                 index = -1;
             }

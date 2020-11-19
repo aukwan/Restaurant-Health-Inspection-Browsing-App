@@ -16,7 +16,7 @@
         app:menu="@menu/bottom_nav_menu"
         app:itemBackground="@color/colorAccent"
         app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"/>
+        app:itemTextColor="@android:color/white" />
 
     <ListView
         android:id="@+id/listViewMain"

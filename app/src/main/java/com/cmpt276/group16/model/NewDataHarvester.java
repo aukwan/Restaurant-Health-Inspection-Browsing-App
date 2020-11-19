@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.cmpt276.group16.ui.inspectionUpdatePopup;
-import com.cmpt276.group16.ui.restaurantUpdatePopup;
+import com.cmpt276.group16.ui.popups.inspectionUpdatePopup;
+import com.cmpt276.group16.ui.popups.restaurantUpdatePopup;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -23,6 +23,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/*
+        Takes the data from the surrey API with GET method using OkHttp3 (Stories.iteration2)
+ */
+
 public class NewDataHarvester {
     private static final String restaurantsQueryUrl = "https://data.surrey.ca/api/3/action/package_show?id=restaurants";
     private static final String restaurantInspectionsQueryUrl = "https://data.surrey.ca/api/3/action/package_show?id=fraser-health-restaurant-inspection-reports";
@@ -30,7 +34,6 @@ public class NewDataHarvester {
     private static final String periodicDataPreft = "periodicDataPreft";
     private static final String lastCheckedHoursForRestaurantsChanged = "lastCheckedHoursForRestaurantsChanged";
     private static final String lastCheckedHoursForInspectionsChanged = "lastCheckedHoursForInspectionsChanged";
-
 
 
     private String lastModified = "none";
@@ -106,6 +109,7 @@ public class NewDataHarvester {
 
         }
     }
+
     public void checkForPeriodicDataChangeForInspections(Activity activity) {
         SharedPreferences remoteDataPrefs = activity.getSharedPreferences(this.periodicDataPreft, Context.MODE_PRIVATE);
         int lastCheckedHoursForInspectionsChanged = remoteDataPrefs.getInt(this.lastCheckedHoursForInspectionsChanged, 0);

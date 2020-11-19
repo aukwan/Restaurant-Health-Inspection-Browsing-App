@@ -37,8 +37,7 @@
             android:label="@string/title_activity_restaurant_maps">
 
         </activity>
-        <activity
-            android:name=".ui.ReadActivity">
+        <activity android:name=".ui.ReadActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,13 +45,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.inspectionUpdatePopup"
+            android:name=".ui.popups.inspectionUpdatePopup"
             android:theme="@style/AppTheme.updatePopup" />
         <activity
-            android:name=".ui.restaurantUpdatePopup"
+            android:name=".ui.popups.restaurantUpdatePopup"
             android:theme="@style/AppTheme.updatePopup" />
         <activity
-            android:name=".ui.popups.InspectionUI"
+            android:name=".ui.InspectionUI"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.RestaurantUI"
