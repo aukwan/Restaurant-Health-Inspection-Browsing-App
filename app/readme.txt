@@ -6,5 +6,12 @@ certification - https://www.flaticon.com/free-icon/certificate_2912761?term=cert
 operation - https://www.flaticon.com/free-icon/shop_2884674?term=restaurant&page=1&position=33
 sanitation - https://www.flaticon.com/free-icon/health-insurance_3022800?term=sanitary&page=1&position=1
 Issue level - https://www.flaticon.com/free-icon/rec_304378
-map - https://www.flaticon.com/free-icon/pin_484167?term=map&page=1&position=10
-list - https://www.flaticon.com/free-icon/list_545708?term=list&page=1&position=6
+map - https://pngegg.com/en/png-fpxjp
+list - https://onlinewebfonts.com/icon/411349
+
+The GPS Button on the top right for the map activity keeps the camera centered on the user even as the user is moving
+    To stop the camera from centering on the user, click on the map once!
+
+Click on the GPS Coordinates in the restaurant full info screen to go to the restaurant's marker on the map
+    -If it's not shown it's in a cluster and should be zoomed in by the user to view the marker
+   
