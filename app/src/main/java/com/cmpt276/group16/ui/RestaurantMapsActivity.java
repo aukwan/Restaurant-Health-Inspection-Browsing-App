@@ -107,17 +107,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
             //sets the markers for all the locations
             addItem();
+            getDeviceLocation();
 
-            if (restaurantIndex != -1) {
-                Double latitude = restaurantManager.getRestaurant(restaurantIndex).getLatitude();
-                Double longitude = restaurantManager.getRestaurant(restaurantIndex).getLongitude();
-                LatLng latLng = new LatLng(latitude, longitude);
-                Log.e(TAG, "latitude for index " + latitude + "longitude for index " + longitude);
-                moveCamera(latLng, DEFAULT_ZOOM);
-
-            } else {
-                getDeviceLocation();
-            }
 
 
         }
@@ -200,24 +191,31 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         try{
             if (mLocationPermissionGranted) {
                 final Task<Location> location = mFusedLocationProviderClient.getLastLocation();
+
                 if (location != null) {
                     location.addOnSuccessListener(new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
                             Log.d(TAG, "onComplete: found location");
                             if (location != null) {
-
-                                Double wayLatitude = location.getLatitude();
-                                Double wayLongitude = location.getLongitude();
-                                LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
-
-                                moveCamera(currLatiAndLong, DEFAULT_ZOOM);
+                                if (restaurantIndex != -1) {
+                                    Double latitude = restaurantManager.getRestaurant(restaurantIndex).getLatitude();
+                                    Double longitude = restaurantManager.getRestaurant(restaurantIndex).getLongitude();
+                                    LatLng latLng = new LatLng(latitude, longitude);
+                                    Log.e(TAG, "latitude for index " + latitude + "longitude for index " + longitude);
+                                    moveCamera(latLng, DEFAULT_ZOOM);
+                                } else {
+                                    Double wayLatitude = location.getLatitude();
+                                    Double wayLongitude = location.getLongitude();
+                                    LatLng currLatiAndLong = new LatLng(wayLatitude, wayLongitude);
+                                    moveCamera(currLatiAndLong, DEFAULT_ZOOM);
+                                }
                             }
                             else {
                                 //Toast.makeText(RestaurantMapsActivity.this, "unable to get current location - Lat and Long", Toast.LENGTH_SHORT).show();
                                 locationRequest = LocationRequest.create();
                                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                                locationRequest.setInterval(1000);
+                                locationRequest.setInterval(20 * 1000);
                                 locationCallback = new LocationCallback() {
                                     @Override
                                     public void onLocationResult(LocationResult locationResult) {
