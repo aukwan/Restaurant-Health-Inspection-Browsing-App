@@ -14,4 +14,4 @@ The GPS Button on the top right for the map activity keeps the camera centered o
 
 Click on the GPS Coordinates in the restaurant full info screen to go to the restaurant's marker on the map
     -If it's not shown it's in a cluster and should be zoomed in by the user to view the marker
-   
+
