@@ -306,7 +306,40 @@ public class MainActivity extends AppCompatActivity {
             }
             Restaurant currentRestaurant = restaurantManager.getRestaurant(position);
             ImageView imageView = (ImageView) itemView.findViewById(R.id.imageRestaurant);
-            imageView.setImageResource(R.drawable.dish);
+            // Set Icons for some restaurants
+            if (currentRestaurant.getName().indexOf("7-Eleven")>-1){
+                imageView.setImageResource(R.drawable.logoseven);
+            }
+            else if(currentRestaurant.getName().indexOf("A&W")>-1||currentRestaurant.getName().indexOf("A & W")>-1){
+                imageView.setImageResource(R.drawable.logoaw);
+            }
+            else if(currentRestaurant.getName().indexOf("Tim Hortons")>-1){
+                imageView.setImageResource(R.drawable.logotim);
+            }
+            else if(currentRestaurant.getName().indexOf("Circle K")>-1){
+                imageView.setImageResource(R.drawable.logocirclek);
+            }
+            else if(currentRestaurant.getName().indexOf("Burger King")>-1){
+                imageView.setImageResource(R.drawable.logoburgerking);
+            }
+            else if(currentRestaurant.getName().indexOf("Boston Pizza")>-1){
+                imageView.setImageResource(R.drawable.logobp);
+            }
+            else if(currentRestaurant.getName().indexOf("COBS")>-1){
+                imageView.setImageResource(R.drawable.logocobs);
+            }
+            else if(currentRestaurant.getName().indexOf("McDonald's")>-1){
+                imageView.setImageResource(R.drawable.logomcd);
+            }
+            else if(currentRestaurant.getName().indexOf("Starbucks")>-1){
+                imageView.setImageResource(R.drawable.logostarbucks);
+            }
+            else if(currentRestaurant.getName().indexOf("Pizza Hut")>-1){
+                imageView.setImageResource(R.drawable.logopizza);
+            }
+            else{
+                imageView.setImageResource(R.drawable.dish);
+            }
             TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
             textView.setText(currentRestaurant.getName());
             if (currentRestaurant.getIssuesList().size() != 0) {
