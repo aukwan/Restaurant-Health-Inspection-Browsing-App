@@ -1,11 +1,8 @@
 package com.cmpt276.group16.ui;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,27 +10,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
-import com.cmpt276.group16.model.NewDataHarvester;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         registerClickCallback();
+        configureSearchBar();
         populateListView();
 
     }
@@ -222,6 +211,42 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void configureSearchBar() {
+        SearchView searchView = findViewById(R.id.listSearchBar);
+        searchView.setIconifiedByDefault(false);
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String search = prefs.getString("Search", "");
+        if (!(search.equals(""))) {
+            searchView.setQuery(search, true);
+        } else {
+            searchView.setQuery("", true);
+        }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                SharedPreferences prefs = MainActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("Search", s);
+                editor.apply();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (s.isEmpty()) {
+                    SharedPreferences prefs = MainActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("Search", s);
+                    editor.apply();
+                }
+                return true;
+            }
+        });
+
+
+
     }
 
     @Override
