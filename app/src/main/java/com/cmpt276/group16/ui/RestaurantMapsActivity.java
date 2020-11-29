@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -364,17 +365,34 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     }
 
     private void configureSearchBar() {
-        SearchView searchView = (SearchView) findViewById(R.id.mapSearchBar);
+        SearchView searchView = findViewById(R.id.mapSearchBar);
         searchView.setIconifiedByDefault(false);
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String search = prefs.getString("Search", "");
+        if (!(search.equals(""))) {
+            searchView.setQuery(search, true);
+        } else {
+            searchView.setQuery("", true);
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                return false;
+                SharedPreferences prefs = RestaurantMapsActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("Search", s);
+                editor.apply();
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                return false;
+                if (s.isEmpty()) {
+                    SharedPreferences prefs = RestaurantMapsActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("Search", s);
+                    editor.apply();
+                }
+                return true;
             }
         });
     }

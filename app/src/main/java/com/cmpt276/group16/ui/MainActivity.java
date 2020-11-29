@@ -214,19 +214,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configureSearchBar() {
-        SearchView searchView = (SearchView) findViewById(R.id.listSearchBar);
+        SearchView searchView = findViewById(R.id.listSearchBar);
         searchView.setIconifiedByDefault(false);
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String search = prefs.getString("Search", "");
+        if (!(search.equals(""))) {
+            searchView.setQuery(search, true);
+        } else {
+            searchView.setQuery("", true);
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                return false;
+                SharedPreferences prefs = MainActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("Search", s);
+                editor.apply();
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                return false;
+                if (s.isEmpty()) {
+                    SharedPreferences prefs = MainActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("Search", s);
+                    editor.apply();
+                }
+                return true;
             }
         });
+
+
+
     }
 
     @Override
