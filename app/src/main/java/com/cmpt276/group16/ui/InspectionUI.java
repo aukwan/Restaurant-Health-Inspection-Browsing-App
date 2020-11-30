@@ -68,10 +68,16 @@ public class InspectionUI extends AppCompatActivity {
         LocalDate date = LocalDate.parse(unformattedDate, DateTimeFormatter.BASIC_ISO_DATE);
         String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date);
 
-        String inspectionDate = "Inspection Date: " + formattedDate;
-        String inspectionType = "Inspection Type: " + inspection.getInspectionType();
-        String critical = "# Critical Issues Found: " + inspection.getNumCritical();
-        String nonCritical = "# Non-Critical Issues Found: " + inspection.getNumNonCritical();
+        String preStrNumCrit = getString(R.string.preStrNumCrit);
+        String preStrNonNumCrit =getString(R.string.preStrNonNumCrit);
+        String preStrInspectDate =getString(R.string.preStrInspectDate);
+        String preStrInspectType =getString(R.string.preStrInspectType);
+
+
+        String inspectionDate = preStrInspectDate  + formattedDate;
+        String inspectionType = preStrInspectType + inspection.getInspectionType();
+        String critical = preStrNumCrit + inspection.getNumCritical();
+        String nonCritical = preStrNonNumCrit + inspection.getNumNonCritical();
 
         TextView inspectionDateView = findViewById(R.id.inspectionDate);
         inspectionDateView.setText(inspectionDate);
@@ -87,7 +93,14 @@ public class InspectionUI extends AppCompatActivity {
     }
 
     private void setHazardRatingTextAndIcon() {
-        String hazardRating = inspection.getHazardRated();
+        String hazardRating;
+        if (inspection.getHazardRated().equals("High")){
+            hazardRating = getString(R.string.High);
+        } else if (inspection.getHazardRated().equals("Moderate")){
+            hazardRating = getString(R.string.Moderate);
+        } else {
+            hazardRating = getString(R.string.Low);
+        }
         ImageView hazardIcon = findViewById(R.id.hazardIcon);
         TextView hazardLevelText = findViewById(R.id.hazardRating);
         hazardLevelText.setText(hazardRating);
@@ -156,7 +169,14 @@ public class InspectionUI extends AppCompatActivity {
             }
 
             TextView shortDescriptionText = itemView.findViewById(R.id.violationShortDescription);
-            shortDescriptionText.setText("" + currentViolation.getViolNum() + ", " + currentViolation.getSeverity());
+            String severityStr;
+            if (currentViolation.getSeverity().equals("Not Critical")){
+                severityStr = getString(R.string.Not_Critical);
+            }else {
+                severityStr = getString(R.string.Critical);
+            }
+
+            shortDescriptionText.setText("" + currentViolation.getViolNum() + ", " + severityStr);
 
             // Set severity icon colour
             ImageView violationSeverityView = itemView.findViewById(R.id.violationSeverity);

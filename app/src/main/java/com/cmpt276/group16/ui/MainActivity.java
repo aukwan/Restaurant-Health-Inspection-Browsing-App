@@ -121,22 +121,26 @@ public class MainActivity extends AppCompatActivity {
                 String hazardLevel = currentIssues.getHazardRated();
                 if (hazardLevel.equals("Low")) {
                     TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
-                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    String hazardLevelStr = getString(R.string.hazardLevelLow);
+                    textHazardLevel.setText(hazardLevelStr);
                     ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                     imageHazardLevel.setImageResource(R.drawable.greendot);
                 } else if (hazardLevel.equals("Moderate")) {
                     TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
-                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    String hazardLevelStr = getString(R.string.hazardLevelModerate);
+                    textHazardLevel.setText(hazardLevelStr);
                     ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                     imageHazardLevel.setImageResource(R.drawable.yellowdot);
                 } else {
                     TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
-                    textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                    String hazardLevelStr = getString(R.string.hazardLevelHigh);
+                    textHazardLevel.setText(hazardLevelStr);
                     ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                     imageHazardLevel.setImageResource(R.drawable.reddot);
                 }
                 int totalIssues = currentIssues.getNumCritical() + currentIssues.getNumNonCritical();
-                String info = "# of Issues Found: " + totalIssues;
+                String numIssuesPreStr = getString(R.string.numIssuesPreStr);
+                String info = numIssuesPreStr + totalIssues;
                 TextView textIssues = (TextView) itemView.findViewById(R.id.textInfo);
                 textIssues.setText(info);
 

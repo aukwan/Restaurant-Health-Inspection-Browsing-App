@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Group 16</string>
+    <string name="restaurantname">restaurantName</string>
+    <string name="gps">gps</string>
+    <string name="address">address</string>
+    <string name="critical_issues">des problèmes critiques</string>
+    <string name="non_critical_issues">problèmes non critiques</string>
+    <string name="inspection_date">Date d\'inspection</string>
+    <string name="inspection_routine">Type d\'inspection</string>
+    <string name="tools_ignore_contentdescription">tools:ignore=ContentDescription</string>
+    <string name="hazard_rating">Cote de danger :</string>
+    <string name="title_activity_update_popup">updatePopup</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Prochain</string>
+    <string name="previous">Précédent</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="title_activity_restaurant_maps">Carte</string>
+    <string name="go_to">Aller à</string>
+
+    <string name="map">Carte</string>
+    <string name="restaurant_list">Liste des restaurants</string>
+    <string name="there_is_new_restaurant_data_available_to_be_updated">Il y a de nouvelles données de restaurant disponibles à mettre à jour</string>
+    <string name="update">réactualiser</string>
+    <string name="ignore">ignorer</string>
+    <string name="there_is_new_inspection_data_available_to_be_updated">De nouvelles données d\'inspection sont disponibles pour être mises à jour</string>
+    <string name="updating">la réactualisation…</string>
+
+    <string name="preStrNumCrit">Des problèmes critiques #: </string>
+    <string name="preStrNonNumCrit">Problèmes non critiques #: </string>
+    <string name="preStrInspectDate">Date d\'inspection: </string>
+    <string name="preStrInspectType">Type d\'inspection:</string>
+
+    <string name="hazardLevelLow">Niveau de danger: Faible</string>
+    <string name="hazardLevelModerate">Niveau de danger: Modéré</string>
+    <string name="hazardLevelHigh">Niveau de danger: Élevé</string>
+
+    <string name="numIssuesPreStr"># de problèmes trouvés: </string>
+
+    <string name="Low">Faible</string>
+    <string name="Moderate">Modéré</string>
+    <string name="High">Élevé</string>
+
+    <string name="Critical">Critique</string>
+    <string name="Not_Critical">Pas critique</string>
+
+    <string name="City">Ville</string>
+    <string name="Address">Adresse</string>
+</resources>

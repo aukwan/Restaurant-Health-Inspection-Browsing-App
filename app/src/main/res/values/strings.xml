@@ -24,4 +24,30 @@
 
     <string name="map">Map</string>
     <string name="restaurant_list">Restaurant List</string>
+    <string name="there_is_new_restaurant_data_available_to_be_updated">There is new restaurant data available to be updated</string>
+    <string name="update">update</string>
+    <string name="ignore">ignore</string>
+    <string name="there_is_new_inspection_data_available_to_be_updated">There is new inspection data available to be updated</string>
+    <string name="updating">updating...</string>
+
+    <string name="preStrNumCrit">Critical issues #: </string>
+    <string name="preStrNonNumCrit">Non - Critical issues #: </string>
+    <string name="preStrInspectDate">Inspection Date: </string>
+    <string name="preStrInspectType">Inspection Type: </string>
+
+    <string name="hazardLevelLow">Hazard Level: Low</string>
+    <string name="hazardLevelModerate">Hazard Level: Moderate</string>
+    <string name="hazardLevelHigh">Hazard Level: High</string>
+
+    <string name="numIssuesPreStr"># of Issues Found: </string>
+
+    <string name="Low">Low</string>
+    <string name="Moderate">Moderate</string>
+    <string name="High">High</string>
+
+    <string name="Critical">Critical</string>
+    <string name="Not_Critical">Not Critical</string>
+
+    <string name="City">City</string>
+    <string name="Address">Address</string>
 </resources>
