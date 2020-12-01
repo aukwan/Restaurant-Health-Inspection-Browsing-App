@@ -24,6 +24,7 @@ import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.NewDataHarvester;
 import com.cmpt276.group16.model.Restaurant;
+import com.cmpt276.group16.model.RestaurantFavourite;
 import com.cmpt276.group16.model.RestaurantList;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -47,6 +48,7 @@ App entry point, List of all restaurants (Stories.iteration1.1)
 public class MainActivity extends AppCompatActivity {
 
     private RestaurantList restaurantManager = RestaurantList.getInstance();
+    private RestaurantFavourite restaurantFavourite = new RestaurantFavourite();
     private ArrayAdapter<Restaurant> adapter;
 
 
@@ -60,15 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    //In case in the future he wants us to manually add a restaurant in the software
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        registerClickCallback();
-//        populateListView();
-//
-//    }
     //POPULATES THE LIST VIEW
     private void populateListView() {
         adapter = new MyListAdapter();
@@ -114,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 imageView.setImageResource(R.drawable.dish);
             }
+
+            //highlight if the restaurant is favourite or not
+            if (restaurantFavourite.determineIfFavourite(MainActivity.this, currentRestaurant.getTrackingNumber())){
+                itemView.setBackgroundResource(R.drawable.restaurant_menu_border);
+            }
+
+
             TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
             textView.setText(currentRestaurant.getName());
             if (currentRestaurant.getIssuesList().size() != 0) {

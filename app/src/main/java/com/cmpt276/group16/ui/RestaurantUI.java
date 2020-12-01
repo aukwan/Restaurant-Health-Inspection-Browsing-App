@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
+import com.cmpt276.group16.model.RestaurantFavourite;
 import com.cmpt276.group16.model.RestaurantList;
 
 import java.text.ParseException;
@@ -31,6 +33,7 @@ Display single restaurant UI (Stories.iteration1.2)
 public class RestaurantUI extends AppCompatActivity {
     private int restaurantIndex;
     private final RestaurantList restaurantManager = RestaurantList.getInstance();
+    private RestaurantFavourite restaurantFavourite = new RestaurantFavourite();
     private ArrayAdapter<Issues> adapter;
 
     @Override
@@ -41,19 +44,11 @@ public class RestaurantUI extends AppCompatActivity {
         extractDataFromSharedPref();
         setupTextViews();
         populateListView();
+        populateRestaurantFavourite();
+        onStarPress();
         registerClickCallback();
         backArrowPress();
     }
-    //In case in the future he wants us to manually add a restaurant in the software
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        extractDataFromSharedPref();
-//        setupTextViews();
-//        populateListView();
-//        registerClickCallback();
-//
-//    }
 
     //setup the TextView for UI
     private void setupTextViews() {
@@ -73,6 +68,40 @@ public class RestaurantUI extends AppCompatActivity {
         restaurantNameTextView.setText(restaurantName);
         restaurantAddressTextView.setText(restaurantAddress);
         restaurantGPSTextView.setText(restaurantGPS);
+    }
+
+    private void populateRestaurantFavourite() {
+        ImageView star = findViewById(R.id.restaurantUIStarButton);
+        boolean isFavourite = restaurantFavourite.determineIfFavourite(this, restaurantManager.getRestArray().get(restaurantIndex).getTrackingNumber());
+        Log.i("isFavourite", "" + isFavourite);
+        if (isFavourite) {
+            star.setImageResource(R.drawable.ic_baseline_star_24);
+            star.setTag("starFull");
+        } else {
+            star.setTag("starBorder");
+        }
+
+    }
+
+    private void onStarPress() {
+        final ImageView star = findViewById(R.id.restaurantUIStarButton);
+        star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("star", "" + star.getTag());
+
+                if (star.getTag() == "starBorder") {
+                    star.setImageResource(R.drawable.ic_baseline_star_24);
+                    restaurantFavourite.addToFavourites(RestaurantUI.this, restaurantManager.getRestArray().get(restaurantIndex).getTrackingNumber());
+                    star.setTag("starFull");
+                } else {
+                    star.setImageResource(R.drawable.ic_baseline_star_border_24);
+                    restaurantFavourite.removeFromFavourities(RestaurantUI.this, restaurantManager.getRestArray().get(restaurantIndex).getTrackingNumber());
+                    star.setTag("starBorder");
+                }
+            }
+        });
+
     }
 
 
