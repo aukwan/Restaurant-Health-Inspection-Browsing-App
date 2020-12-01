@@ -50,4 +50,47 @@
 
     <string name="City">Ville</string>
     <string name="Address">Adresse</string>
+
+    <string name="no_description">Pas de description</string>
+
+    <string name="viol_101">101, Pas critique, Plans / construction / modifications non conformes au règlement [art. 3; s. 4], ne pas répéter</string>
+    <string name="viol_102">102, Pas critique, Exploitation d\'un établissement alimentaire non approuvé [art. 6 (1)], ne pas répéter</string>
+    <string name="viol_103">103, Pas critique, Défaut de détenir un permis valide lors de l\'exploitation d\'un établissement de restauration [art. 8 (1)], ne pas répéter</string>
+    <string name="viol_104">104, Pas critique, Permis non affiché dans un endroit bien en vue [art. 8 (7)], ne pas répéter</string>
+
+    <string name="viol_201">201, Critique, Aliments contaminés ou impropres à la consommation humaine [art. 13], ne pas répéter</string>
+    <string name="viol_202">202, Critical, Aliments non transformés de manière à les rendre sûrs à manger [art. 14 (1)], ne pas répéter</string>
+    <string name="viol_203">203, Critical, Aliments non refroidis d\'une manière acceptable [art. 12 (a)], ne pas répéter</string>
+    <string name="viol_204">204, Critical, Aliments non cuits ou réchauffés de manière à être consommés sans danger [art. 14 (1)], ne pas répéter</string>
+    <string name="viol_205">205, Aliments critiques, froids et potentiellement dangereux stockés / affichés au-dessus de 4 ° C. [s. 14 (2)], ne pas répéter</string>
+    <string name="viol_206">206, Critical, Aliments chauds potentiellement dangereux stockés / affichés en dessous de 60 ° C. [s. 14 (2)], ne pas répéter</string>
+    <string name="viol_208">208, Pas critique, Aliments obtenus de sources non approuvées [art. 11], ne pas répéter</string>
+    <string name="viol_209">209, Pas critique, aliments non protégés contre la contamination [art. 12 (a)], ne pas répéter</string>
+    <string name="viol_210">210, Pas critique, Aliments non décongelés d\'une manière acceptable [art. 14 (2)], ne pas répéter</string>
+    <string name="viol_211">211, non critique, aliments potentiellement dangereux congelés stockés / affichés au-dessus de -18 ° C. [s. 14 (3)], ne pas répéter</string>
+    <string name="viol_212">212, non critique, l\'exploitant n\'a pas fourni de procédures écrites acceptables de manipulation des aliments [art. 23], ne pas répéter</string>
+
+    <string name="viol_301">301, Critique, Équipement / ustensiles / surfaces en contact avec les aliments non maintenues dans des conditions sanitaires [art. 17 (1)], ne pas répéter</string>
+    <string name="viol_302">302, Critique, Équipement / ustensiles / surfaces en contact avec les aliments mal lavés et désinfectés [art. 17 (2)], ne pas répéter</string>
+    <string name="viol_303">303, Critique, équipement / installations / eau chaude et froide pour l\'entretien sanitaire insuffisant [art. 17 (3); s. 4 (1) (f)], pas de répétition</string>
+    <string name="viol_304">304, non critique, locaux non exempts de parasites [art. 26 (a)], ne pas répéter</string>
+    <string name="viol_305">305, Pas critique, Conditions observées qui peuvent permettre l\'entrée / l\'hébergement / la reproduction d\'organismes nuisibles [art. 26 (b), (c)], pas de répétition</string>
+    <string name="viol_306">306, Pas critique, Locaux alimentaires non maintenus dans un état sanitaire [art. 17 (1)], ne pas répéter</string>
+    <string name="viol_307">307, Non critique, L\'équipement / les ustensiles / les surfaces en contact avec les aliments ne sont pas de conception / matériau approprié [art. 16; s. 19], ne pas répéter</string>
+    <string name="viol_308">308, non critique, l\'équipement / les ustensiles / les surfaces en contact avec les aliments ne sont pas en bon état de fonctionnement [art. 16 (b)], ne pas répéter</string>
+    <string name="viol_309">309, Non critique, Produits chimiques, nettoyants et agents similaires stockés ou étiquetés de manière incorrecte [art. 27], ne pas répéter</string>
+    <string name="viol_310">310, non critique, les récipients et ustensiles à usage unique sont utilisés plus d\'une fois [art. 20], ne pas répéter</string>
+    <string name="viol_311">311, non critique, locaux non entretenus conformément aux plans approuvés [art. 6 (1) (b)], ne pas répéter</string>
+    <string name="viol_312">312, non critique, les articles non requis pour l\'exploitation des locaux destinés aux aliments sont entreposés sur les lieux [art. 18], ne pas répéter</string>
+    <string name="viol_314">314, Pas critique, l\'exploitant n\'a pas fourni de procédures d\'assainissement écrites acceptables [art. 24], ne pas répéter</string>
+    <string name="viol_315">315, Pas critique, les unités de réfrigération et l\'équipement de maintien au chaud manquent de thermomètres précis [art. 19 (2)], ne pas répéter</string>
+
+    <string name="viol_401">401, Stations de lavage des mains essentielles et adéquates non disponibles pour les employés [art. 21 (4)], ne pas répéter</string>
+    <string name="viol_402">402, Critique, l\'employé ne se lave pas les mains correctement ou à une fréquence adéquate [art. 21 (3)], ne pas répéter</string>
+    <string name="viol_404">404, Pas critique, les employés fument dans les zones de préparation / transformation / stockage des aliments [art. 21 (2)], ne pas répéter</string>
+
+    <string name="viol_501">501, non critique, l\'exploitant n\'a pas le niveau FOODSAFE 1 ou l\'équivalent [s. 10 (1)], ne pas répéter</string>
+    <string name="viol_502">502, non critique, en l\'absence de l\'exploitant, aucun membre du personnel de service n\'a le niveau 1 de SÉCURITÉ ALIMENTAIRE ou l\'équivalent [art. 10 (2)], ne pas répéter</string>
+
+
 </resources>
