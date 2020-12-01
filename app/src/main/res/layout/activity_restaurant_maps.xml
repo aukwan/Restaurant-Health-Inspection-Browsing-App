@@ -30,9 +30,20 @@
 
     <SearchView
         android:id="@+id/mapSearchBar"
-        android:layout_width="match_parent"
+        android:layout_width="315dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginEnd="4dp"
+        android:layout_toStartOf="@+id/mapFilterBtn"
         android:background="@android:color/white" />
+
+    <Button
+        android:id="@+id/mapFilterBtn"
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/filter" />
 </RelativeLayout>
