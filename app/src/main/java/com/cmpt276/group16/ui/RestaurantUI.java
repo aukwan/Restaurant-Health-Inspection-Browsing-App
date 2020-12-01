@@ -107,10 +107,17 @@ public class RestaurantUI extends AppCompatActivity {
 
             Issues currentInspection = restaurantManager.getRestArray().get(restaurantIndex).getIssuesList().get(position);
 
+
+
             //set strings from issue details
-            String numCrit = "Critical issues #: " + currentInspection.getNumCritical();
-            String numNonCrit = "Non - Critical issues #: " + currentInspection.getNumNonCritical();
-            String inspectDate = "Inspection Date: " + currentInspection.getIssueDate();
+            String preStrNumCrit = getString(R.string.preStrNumCrit);
+            String preStrNonNumCrit =getString(R.string.preStrNonNumCrit);
+            String preStrInspectDate =getString(R.string.preStrInspectDate);
+
+
+            String numCrit = preStrNumCrit + currentInspection.getNumCritical();
+            String numNonCrit = preStrNonNumCrit + currentInspection.getNumNonCritical();
+            String inspectDate = preStrInspectDate + currentInspection.getIssueDate();
 
             //initialise single item elements
             TextView criticalIssuesListViewTextView = (TextView) itemView.findViewById(R.id.criticalIssuesListView);

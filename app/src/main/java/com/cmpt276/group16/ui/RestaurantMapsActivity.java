@@ -133,17 +133,19 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             LatLng latLng = new LatLng(restaurantManager.getRestArray().get(i).getLatitude(), restaurantManager.getRestArray().get(i).getLongitude());
             Restaurant currentRestaurant = restaurantManager.getRestArray().get(i);
             BitmapDescriptor mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("greendot", 100, 100));
-            String mSnippet = "City: " + currentRestaurant.getPhysicalCity() + "\n" + "Address: " + currentRestaurant.getPhysicalAddress();
+            String mSnippet = getString(R.string.City) +": " + currentRestaurant.getPhysicalCity() + "\n" + getString(R.string.Address) + ": " + currentRestaurant.getPhysicalAddress();
             String mTitle = restaurantManager.getRestArray().get(i).getName();
 
             if (currentRestaurant.getIssuesList().size() != 0) {
                 Issues currentIssues = currentRestaurant.getIssuesList().get(0);
                 String hazardLevel = currentIssues.getHazardRated();
-                mSnippet = "City: " + currentRestaurant.getPhysicalCity() + "\n" + "Address: " + currentRestaurant.getPhysicalAddress() + "\n" + "Hazard Level: " + hazardLevel;
+                mSnippet = getString(R.string.City) +": " + currentRestaurant.getPhysicalCity() + "\n" + getString(R.string.Address) + ": " + currentRestaurant.getPhysicalAddress() + "\n" + getString(R.string.hazardLevelLow);
                 if (hazardLevel.equals("High")) {
                     mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("reddot", 100, 100));
+                    mSnippet = getString(R.string.City) +": " + currentRestaurant.getPhysicalCity() + "\n" + getString(R.string.Address) + ": " + currentRestaurant.getPhysicalAddress() + "\n" + getString(R.string.hazardLevelHigh);
                 } else if (hazardLevel.equals("Moderate")) {
                     mIcon = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("yellowdot", 100, 100));
+                    mSnippet = getString(R.string.City) +": " + currentRestaurant.getPhysicalCity() + "\n" + getString(R.string.Address) + ": " + currentRestaurant.getPhysicalAddress() + "\n" + getString(R.string.hazardLevelModerate);
                 }
             }
 
