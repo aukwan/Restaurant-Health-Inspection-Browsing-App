@@ -12,7 +12,7 @@
         android:layout_width="322dp"
         android:layout_height="59dp"
         android:fontFamily="@font/cuprum"
-        android:text="There is new restaurant data available to be updated"
+        android:text="@string/there_is_new_restaurant_data_available_to_be_updated"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginTop="20dp"
-        android:text="update"
+        android:text="@string/update"
         app:layout_constraintEnd_toStartOf="@+id/ignoreButton"
         app:layout_constraintHorizontal_bias="0.017"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="40dp"
-        android:text="ignore"
+        android:text="@string/ignore"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newDataTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -68,10 +68,16 @@ public class InspectionUI extends AppCompatActivity {
         LocalDate date = LocalDate.parse(unformattedDate, DateTimeFormatter.BASIC_ISO_DATE);
         String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date);
 
-        String inspectionDate = "Inspection Date: " + formattedDate;
-        String inspectionType = "Inspection Type: " + inspection.getInspectionType();
-        String critical = "# Critical Issues Found: " + inspection.getNumCritical();
-        String nonCritical = "# Non-Critical Issues Found: " + inspection.getNumNonCritical();
+        String preStrNumCrit = getString(R.string.preStrNumCrit);
+        String preStrNonNumCrit =getString(R.string.preStrNonNumCrit);
+        String preStrInspectDate =getString(R.string.preStrInspectDate);
+        String preStrInspectType =getString(R.string.preStrInspectType);
+
+
+        String inspectionDate = preStrInspectDate  + formattedDate;
+        String inspectionType = preStrInspectType + inspection.getInspectionType();
+        String critical = preStrNumCrit + inspection.getNumCritical();
+        String nonCritical = preStrNonNumCrit + inspection.getNumNonCritical();
 
         TextView inspectionDateView = findViewById(R.id.inspectionDate);
         inspectionDateView.setText(inspectionDate);
@@ -87,7 +93,14 @@ public class InspectionUI extends AppCompatActivity {
     }
 
     private void setHazardRatingTextAndIcon() {
-        String hazardRating = inspection.getHazardRated();
+        String hazardRating;
+        if (inspection.getHazardRated().equals("High")){
+            hazardRating = getString(R.string.High);
+        } else if (inspection.getHazardRated().equals("Moderate")){
+            hazardRating = getString(R.string.Moderate);
+        } else {
+            hazardRating = getString(R.string.Low);
+        }
         ImageView hazardIcon = findViewById(R.id.hazardIcon);
         TextView hazardLevelText = findViewById(R.id.hazardRating);
         hazardLevelText.setText(hazardRating);
@@ -122,10 +135,95 @@ public class InspectionUI extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Violations currentViolation = violations.get(position);
-                String longDescription = currentViolation.toString();
+                String[] violDesc= currentViolation.toString().split(",");
+                String longDescription = getViolStringFromXML(violDesc[0]);
+
                 Toast.makeText(InspectionUI.this, longDescription, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private String getViolStringFromXML(String num){
+        String longDescription = getString(R.string.no_description);
+        if (num.equals("101")){
+            longDescription = getString(R.string.viol_101);
+        }else if (num.equals("102")){
+            longDescription = getString(R.string.viol_102);
+        }else if (num.equals("103")){
+            longDescription = getString(R.string.viol_103);
+        }else if (num.equals("104")){
+            longDescription = getString(R.string.viol_104);
+        }else if (num.equals("201")){
+            longDescription = getString(R.string.viol_201);
+        }else if (num.equals("202")){
+            longDescription = getString(R.string.viol_202);
+        }else if (num.equals("203")){
+            longDescription = getString(R.string.viol_203);
+        }
+        else if (num.equals("204")){
+            longDescription = getString(R.string.viol_204);
+        }
+        else if (num.equals("205")){
+            longDescription = getString(R.string.viol_205);
+        }
+        else if (num.equals("206")){
+            longDescription = getString(R.string.viol_206);
+        }
+        else if (num.equals("208")){
+            longDescription = getString(R.string.viol_208);
+        }
+        else if (num.equals("209")){
+            longDescription = getString(R.string.viol_209);
+        }
+        else if (num.equals("210")){
+            longDescription = getString(R.string.viol_210);
+        }
+        else if (num.equals("211")){
+            longDescription = getString(R.string.viol_211);
+        }
+        else if (num.equals("212")){
+            longDescription = getString(R.string.viol_212);
+        }else if (num.equals("301")){
+            longDescription = getString(R.string.viol_301);
+        }else if (num.equals("302")){
+            longDescription = getString(R.string.viol_302);
+        }else if (num.equals("303")){
+            longDescription = getString(R.string.viol_303);
+        }else if (num.equals("304")){
+            longDescription = getString(R.string.viol_304);
+        }else if (num.equals("305")){
+            longDescription = getString(R.string.viol_305);
+        }else if (num.equals("306")){
+            longDescription = getString(R.string.viol_306);
+        }else if (num.equals("307")){
+            longDescription = getString(R.string.viol_307);
+        }else if (num.equals("308")){
+            longDescription = getString(R.string.viol_308);
+        }else if (num.equals("309")){
+            longDescription = getString(R.string.viol_309);
+        }else if (num.equals("310")){
+            longDescription = getString(R.string.viol_310);
+        }else if (num.equals("311")){
+            longDescription = getString(R.string.viol_311);
+        }else if (num.equals("312")){
+            longDescription = getString(R.string.viol_312);
+        }else if (num.equals("314")){
+            longDescription = getString(R.string.viol_314);
+        }else if (num.equals("315")){
+            longDescription = getString(R.string.viol_315);
+        }else if (num.equals("401")){
+            longDescription = getString(R.string.viol_401);
+        }else if (num.equals("402")){
+            longDescription = getString(R.string.viol_402);
+        }else if (num.equals("404")){
+            longDescription = getString(R.string.viol_404);
+        }else if (num.equals("501")){
+            longDescription = getString(R.string.viol_501);
+        }else if (num.equals("502")){
+            longDescription = getString(R.string.viol_502);
+        }
+
+        return longDescription;
     }
 
     private class ViolationListAdapter extends ArrayAdapter<Violations> {
@@ -156,7 +254,14 @@ public class InspectionUI extends AppCompatActivity {
             }
 
             TextView shortDescriptionText = itemView.findViewById(R.id.violationShortDescription);
-            shortDescriptionText.setText("" + currentViolation.getViolNum() + ", " + currentViolation.getSeverity());
+            String severityStr;
+            if (currentViolation.getSeverity().equals("Not Critical")){
+                severityStr = getString(R.string.Not_Critical);
+            }else {
+                severityStr = getString(R.string.Critical);
+            }
+
+            shortDescriptionText.setText("" + currentViolation.getViolNum() + ", " + severityStr);
 
             // Set severity icon colour
             ImageView violationSeverityView = itemView.findViewById(R.id.violationSeverity);
