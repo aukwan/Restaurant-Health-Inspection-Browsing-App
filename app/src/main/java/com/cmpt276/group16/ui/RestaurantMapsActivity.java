@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,9 +16,13 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -29,6 +34,7 @@ import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.model.Clusters.clusterIconRendered;
 import com.cmpt276.group16.model.Clusters.restaurantItem;
+import com.cmpt276.group16.ui.popups.SearchFilter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,6 +51,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.ClusterManager;
+
+import java.text.MessageFormat;
 
 
 /*
@@ -69,6 +77,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private LocationCallback locationCallback;
     private int restaurantIndex = -1;
     private clusterIconRendered mRenderer;
+    private SearchFilter filter;
 
     private boolean toggleCameraFollow = false;
 
@@ -399,6 +408,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         });
     }
 
+    // BottomNavigation View and Search Filter buttons
     private void registerClickCallback() {
         BottomNavigationView bottomNav = findViewById(R.id.maps_bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -414,6 +424,16 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                     default:
                         return true;
                 }
+            }
+        });
+
+        Button filterBtn = findViewById(R.id.mapFilterBtn);
+        filterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = getSupportFragmentManager();
+                SearchFilter filter = SearchFilter.getInstance();
+                filter.show(manager, "Filter");
             }
         });
     }

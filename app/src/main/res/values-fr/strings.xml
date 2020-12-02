@@ -93,4 +93,12 @@
     <string name="viol_502">502, non critique, en l\'absence de l\'exploitant, aucun membre du personnel de service n\'a le niveau 1 de SÉCURITÉ ALIMENTAIRE ou l\'équivalent [art. 10 (2)], ne pas répéter</string>
 
 
+    <string name="filter">Filtre</string>
+    <string name="show_specific_hazard_level">Afficher Le Niveau De Danger Spécifique :</string>
+    <string name="show_or_n_critical_violations_within_the_last_year"><![CDATA[Afficher <= ou> = N Violations Critiques Au Cours De La Dernière Année :]]></string>
+    <string name="n">N =</string>
+    <string name="show_favourite">Montrer Favori :</string>
+    <string name="clear_filters">Effacer Les Filtres</string>
+    <string name="show_don_t_show">Montrer/Ne Pas Montrer</string>
+    <string name="n_button_text"><![CDATA[<= / >= N]]></string>
 </resources>

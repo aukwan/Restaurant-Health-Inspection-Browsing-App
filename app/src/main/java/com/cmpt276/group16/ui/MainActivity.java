@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -15,11 +16,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
+import com.cmpt276.group16.ui.popups.SearchFilter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.ParseException;
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    //LISTVIEW and BottomNavigationView BUTTONS
+    //LISTVIEW, BottomNavigationView, and Search Filter BUTTONS
     private void registerClickCallback() {
 
         ListView list = (ListView) findViewById(R.id.listViewMain);
@@ -213,6 +216,16 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         return true;
                 }
+            }
+        });
+
+        Button filterBtn = findViewById(R.id.listFilterBtn);
+        filterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = getSupportFragmentManager();
+                SearchFilter filter = SearchFilter.getInstance();
+                filter.show(manager, "Filter");
             }
         });
     }
