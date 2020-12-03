@@ -2,13 +2,14 @@ package com.cmpt276.group16.ui.popups;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.SwitchCompat;
@@ -54,21 +55,30 @@ public class SearchFilter extends AppCompatDialogFragment {
         lowHazard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Filtering functions
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("Hazard", 1);
+                editor.apply();
             }
         });
 
         moderateHazard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Filtering functions
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("Hazard", 2);
+                editor.apply();
             }
         });
 
         highHazard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Filtering functions
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("Hazard", 3);
+                editor.apply();
             }
         });
     }
@@ -87,5 +97,6 @@ public class SearchFilter extends AppCompatDialogFragment {
     private void configureClearFilters(View view) {
         Button clearFiltersBtn = view.findViewById(R.id.clearFiltersBtn);
         //TODO: CLear all filters (optional, can remove if not needed)
+
     }
 }

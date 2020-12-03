@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
+    private String searchText;
 
 
     @Override
@@ -63,12 +64,6 @@ public class MainActivity extends AppCompatActivity {
 //        populateListView();
 //
 //    }
-    //POPULATES THE LIST VIEW
-    private void populateListView() {
-        adapter = new MyListAdapter();
-        ListView list = findViewById(R.id.listViewMain);
-        list.setAdapter(adapter);
-    }
 
     //ADAPTER
     private class MyListAdapter extends ArrayAdapter<Restaurant> {
@@ -240,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             searchView.setQuery("", true);
         }
+        searchText=search;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -247,49 +243,76 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString("Search", s);
                 editor.apply();
-                restaurantManager.setFilteredList();
-                ArrayList<Restaurant> filtered=new ArrayList<>();
-                for(int k=0;k<restaurantManager.getRestArray().size();k++){
-                    if(restaurantManager.getRestaurant(k).getName().toLowerCase().contains(s.toLowerCase())){
-                        filtered.add(restaurantManager.getRestaurant(k));
-                    }
-                }
-                restaurantManager.setFilteredList(filtered);
+                searchText=s;
                 populateListView();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if (s.isEmpty()) {
-                    SharedPreferences prefs = MainActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("Search", s);
-                    editor.apply();
-                    restaurantManager.setFilteredList();
-                    adapter.notifyDataSetChanged();
-                }
-                else {
-                    SharedPreferences prefs = MainActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("Search", s);
-                    editor.apply();
-                    restaurantManager.setFilteredList();
-                    ArrayList<Restaurant> filtered=new ArrayList<>();
-                    for(int k=0;k<restaurantManager.getRestArray().size();k++){
-                        if(restaurantManager.getRestaurant(k).getName().toLowerCase().contains(s.toLowerCase())){
-                            filtered.add(restaurantManager.getRestaurant(k));
-                        }
-                    }
-                    restaurantManager.setFilteredList(filtered);
-                    populateListView();
-                }
+                SharedPreferences prefs = MainActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("Search", s);
+                editor.apply();
+                searchText=s;
+                populateListView();
                 return true;
             }
         });
 
 
 
+    }
+
+    //POPULATES THE LIST VIEW
+    private void populateListView() {
+        SearchView searchView = findViewById(R.id.listSearchBar);
+        searchView.setIconifiedByDefault(false);
+        String search = searchText;
+        if(search.equals("")){
+            restaurantManager.setFilteredList();
+        }
+        else{
+            restaurantManager.setFilteredList();
+            ArrayList<Restaurant> filtered=new ArrayList<>();
+            for(int k=0;k<restaurantManager.getRestArray().size();k++){
+                if(restaurantManager.getRestaurant(k).getName().toLowerCase().contains(search.toLowerCase())){
+                    filtered.add(restaurantManager.getRestaurant(k));
+                }
+            }
+            restaurantManager.setFilteredList(filtered);
+        }
+        if(restaurantManager.getRestArray().size()!=0) {
+            ArrayList<Restaurant> filtered=new ArrayList<>();
+            SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+            int hazard = prefs.getInt("Hazard", 0);
+            for(int k=0;k<restaurantManager.getRestArray().size();k++){
+                if (restaurantManager.getRestaurant(k).getIssuesList().size() != 0) {
+                    String currentHazard = restaurantManager.getRestaurant(k).getIssuesList().get(0).getHazardRated();
+                    switch (hazard) {
+                        case 0:
+                            filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                        case 1:
+                            if (currentHazard.equals("Low"))
+                                filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                        case 2:
+                            if (currentHazard.equals("Moderate"))
+                                filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                        case 3:
+                            if (currentHazard.equals("High"))
+                                filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                    }
+                }
+            }
+            restaurantManager.setFilteredList(filtered);
+        }
+        adapter = new MyListAdapter();
+        ListView list = findViewById(R.id.listViewMain);
+        list.setAdapter(adapter);
     }
 
     @Override
