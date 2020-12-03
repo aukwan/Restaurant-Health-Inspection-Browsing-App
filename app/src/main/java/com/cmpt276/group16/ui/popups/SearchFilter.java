@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -104,8 +106,6 @@ public class SearchFilter extends AppCompatDialogFragment {
     private void configureInputAndToggleForCritViolations(View view) {
         EditText numViolationsInput = view.findViewById(R.id.numCritViolationsLastYear);
         SwitchCompat nCritViolationsSwitch = view.findViewById(R.id.nCritViolationsSwitch);
-        SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
         nCritViolationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -120,12 +120,31 @@ public class SearchFilter extends AppCompatDialogFragment {
                 editor.apply();
             }
         });
-        if(numViolationsInput.getText().toString().equals(""))
-            editor.putInt("Violations",0);
-        else
-            editor.putInt("Violations",Integer.parseInt(numViolationsInput.getText().toString()));
-        editor.apply();
+        numViolationsInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                if(s.toString().equals(""))
+                    editor.putInt("Violations",0);
+                else
+                    editor.putInt("Violations",Integer.parseInt(s.toString()));
+                editor.apply();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        numViolationsInput.setText(""+prefs.getInt("Violations",0));
+        nCritViolationsSwitch.setChecked(prefs.getBoolean("ViolationSwitch",true));
     }
 
     private void configureToggleForFavourite(View view) {
@@ -149,6 +168,7 @@ public class SearchFilter extends AppCompatDialogFragment {
                 SwitchCompat nCritViolationsSwitch = view.findViewById(R.id.nCritViolationsSwitch);
                 nCritViolationsSwitch.setChecked(true);
                 editor.putBoolean("ViolationSwitch",true);
+                editor.apply();
             }
         });
 

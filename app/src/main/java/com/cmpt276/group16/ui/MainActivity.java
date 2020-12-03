@@ -322,9 +322,25 @@ public class MainActivity extends AppCompatActivity {
             }
             restaurantManager.setFilteredList(filtered);
         }
-        if(prefs.getBoolean("ViolationSwitch",true)){
-
+        ArrayList<Restaurant> filtered=new ArrayList<>();
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        String strDate = df.format(c);
+        int intDate = Integer.parseInt(strDate);
+        for(int k=0;k<restaurantManager.getRestArray().size();k++) {
+            int criticalViolations=0;
+            for(int j=0;j<restaurantManager.getRestaurant(k).getIssuesList().size();j++) {
+                int timeDifference = intDate - restaurantManager.getRestaurant(k).getIssuesList().get(j).getIssueDate();
+                if (timeDifference < 365){
+                    criticalViolations+=restaurantManager.getRestaurant(k).getIssuesList().get(j).getNumCritical();
+                }
+            }
+            if(criticalViolations>=prefs.getInt("Violations",0)&&prefs.getBoolean("ViolationSwitch",true))
+                filtered.add(restaurantManager.getRestaurant(k));
+            else if(criticalViolations<=prefs.getInt("Violations",0)&&!prefs.getBoolean("ViolationSwitch",true))
+                filtered.add(restaurantManager.getRestaurant(k));
         }
+        restaurantManager.setFilteredList(filtered);
         adapter = new MyListAdapter();
         ListView list = findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
