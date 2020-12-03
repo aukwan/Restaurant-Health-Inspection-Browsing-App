@@ -60,6 +60,16 @@ public class MainActivity extends AppCompatActivity {
         registerClickCallback();
         populateListView();
 
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        restaurantFavourite.hasNewInspections(MainActivity.this);
+                    }
+                },
+                5000
+        );
+
     }
 
     //POPULATES THE LIST VIEW
@@ -110,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
             //highlight if the restaurant is favourite or not
             if (restaurantFavourite.determineIfFavourite(MainActivity.this, currentRestaurant.getTrackingNumber())){
+                Log.i("setBackground", "" + restaurantFavourite.determineIfFavourite(MainActivity.this, currentRestaurant.getTrackingNumber()) + " " + currentRestaurant.getTrackingNumber());
                 itemView.setBackgroundResource(R.drawable.restaurant_menu_border);
             }
 
@@ -222,6 +233,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateListView();
     }
 
     @Override

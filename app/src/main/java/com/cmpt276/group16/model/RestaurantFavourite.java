@@ -2,6 +2,7 @@ package com.cmpt276.group16.model;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.os.Trace;
 import android.util.Log;
@@ -43,8 +44,8 @@ public class RestaurantFavourite {
             String line;
             try {
                 while ((line = reader.readLine()) != null) {
-                    Log.i("lineExec", line + " is equal to " + TrackingNumber + "?");
-                    if (line.equals(TrackingNumber)){
+                    Log.i("lineExec", line + " is equal to " + TrackingNumber + "????????");
+                    if (line.contains(TrackingNumber)){
                         Log.i("lineExec", line + " is equal to " + TrackingNumber);
                         isFavourite = true;
                     }
@@ -55,10 +56,14 @@ public class RestaurantFavourite {
             }
         } catch (FileNotFoundException fileNotFoundException) {
             Log.i("fileNotFoundForFavouritesCSV", "" + fileNotFoundException);
-            FileOutputStream fos = null;
+            FileOutputStream fosFav = null;
+            FileOutputStream fosIns = null;
             try {
-                fos = activity.openFileOutput("favourites.csv", Context.MODE_PRIVATE);
-                fos.close();
+                fosFav = activity.openFileOutput("favourites.csv", Context.MODE_PRIVATE);
+                fosIns = activity.openFileOutput("newinspections.csv", Context.MODE_PRIVATE);
+
+                fosFav.close();
+                fosIns.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -68,14 +73,68 @@ public class RestaurantFavourite {
         return isFavourite;
     }
 
-    public void addToFavourites(Activity activity, String trackingNumber) {
+    public void hasNewInspections(Activity activity) {
+        FileInputStream fisFavourites = null;
+        FileInputStream fisInspections = null;
+        try {
+            File favouritesFile = new File(activity.getFilesDir() + "/favourites.csv");
+            File inspectionsFile = new File(activity.getFilesDir() + "/inspectionreports.csv");
+
+
+            fisFavourites = new FileInputStream(favouritesFile);
+            InputStreamReader isrFavourites = new InputStreamReader(fisFavourites);
+
+            fisInspections = new FileInputStream(inspectionsFile);
+            InputStreamReader isrInspections = new InputStreamReader(fisInspections);
+
+            BufferedReader readerInspections = new BufferedReader(isrInspections);
+            BufferedReader readerFavourites = new BufferedReader(isrFavourites);
+
+            String lineFavourite;
+            String lineInspection;
+
+            FileWriter fileWriter = new FileWriter(activity.getFilesDir() + "/newinspections.csv", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter printWriter = new PrintWriter(bufferedWriter);
+
+            try {
+                while ((lineFavourite = readerFavourites.readLine()) != null) {
+                    String[] lineFavouriteValues = lineFavourite.split(",");
+                    while ((lineInspection = readerInspections.readLine()) != null){
+                        if (lineInspection.contains(lineFavouriteValues[0])){
+                            String [] lineInspectionValues = lineInspection.split(",");
+                            if (Integer.parseInt(lineInspectionValues[1]) > Integer.parseInt(lineFavouriteValues[1])){
+                                String restaurantName = lineFavouriteValues[2];
+                                String hazardLevel = lineInspectionValues[lineInspectionValues.length-1];
+                                int date = Integer.parseInt(lineInspectionValues[1]);
+
+                                printWriter.println(date + "," + restaurantName + "," + hazardLevel);
+                                printWriter.flush();
+                                printWriter.close();
+                            }
+                        }
+                    }
+                }
+                isrFavourites.close();
+                isrInspections.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException fileNotFoundException) {
+            Log.i("fileNotFound", "" + fileNotFoundException);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addToFavourites(Activity activity, String trackingNumber, int latestInspectionDate, String restaurantName) {
         try {
             Log.i("saving to ", activity.getFilesDir() + "/favourites.csv");
             FileWriter fileWriter = new FileWriter(activity.getFilesDir() + "/favourites.csv", true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             PrintWriter printWriter = new PrintWriter(bufferedWriter);
 
-            printWriter.println(trackingNumber);
+            printWriter.println(trackingNumber + "," + latestInspectionDate + "," + '"' + restaurantName + '"');
             printWriter.flush();
             printWriter.close();
         } catch (IOException e) {
@@ -96,7 +155,9 @@ public class RestaurantFavourite {
             String currentLine;
 
             while ((currentLine = reader.readLine()) != null){
-                if (currentLine.equals(trackingNumber)) continue;
+                if (currentLine.contains(trackingNumber)) {
+                    continue;
+                }
                 printWriter.println(currentLine);
             }
             reader.close();

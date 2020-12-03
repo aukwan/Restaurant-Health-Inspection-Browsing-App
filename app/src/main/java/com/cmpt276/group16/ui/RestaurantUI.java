@@ -21,6 +21,7 @@ import com.cmpt276.group16.model.RestaurantList;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -92,7 +93,8 @@ public class RestaurantUI extends AppCompatActivity {
 
                 if (star.getTag() == "starBorder") {
                     star.setImageResource(R.drawable.ic_baseline_star_24);
-                    restaurantFavourite.addToFavourites(RestaurantUI.this, restaurantManager.getRestArray().get(restaurantIndex).getTrackingNumber());
+                    ArrayList<Issues> issuesArrayList = restaurantManager.getRestArray().get(restaurantIndex).getIssuesList();
+                    restaurantFavourite.addToFavourites(RestaurantUI.this, restaurantManager.getRestArray().get(restaurantIndex).getTrackingNumber(), issuesArrayList.get(0).getIssueDate(), restaurantManager.getRestArray().get(restaurantIndex).getName());
                     star.setTag("starFull");
                 } else {
                     star.setImageResource(R.drawable.ic_baseline_star_border_24);
