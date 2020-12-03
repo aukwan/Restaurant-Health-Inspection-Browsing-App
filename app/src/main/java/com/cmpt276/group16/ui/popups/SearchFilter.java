@@ -1,8 +1,10 @@
 package com.cmpt276.group16.ui.popups;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,10 +17,16 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.cmpt276.group16.R;
+import com.cmpt276.group16.ui.MainActivity;
+import com.cmpt276.group16.ui.RestaurantMapsActivity;
+/*
+        Iteration 3 : Class used to filter the searches
+ */
 
 
 public class SearchFilter extends AppCompatDialogFragment {
@@ -190,5 +198,19 @@ public class SearchFilter extends AppCompatDialogFragment {
             }
         });
 
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        Activity activity = getActivity();
+        if(activity instanceof MainActivity){
+            ((MainActivity)activity).populateListView();
+        }
+        else if (activity instanceof RestaurantMapsActivity){
+            ((RestaurantMapsActivity)activity).setFilterForRestaurantMaps();
+            ((RestaurantMapsActivity)activity).resetClusterItems();
+            ((RestaurantMapsActivity)activity).setTheClusterMarkersItems();
+        }
     }
 }

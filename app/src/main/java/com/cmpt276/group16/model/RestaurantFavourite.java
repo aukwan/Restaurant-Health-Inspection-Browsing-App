@@ -26,6 +26,10 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+/*
+        Iteration 3 : Class that holds all the restaurants that are favourited
+ */
+
 
 public class RestaurantFavourite {
 

@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
+import com.cmpt276.group16.model.RestaurantFavourite;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.ui.popups.SearchFilter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -120,22 +121,25 @@ public class MainActivity extends AppCompatActivity {
                     String hazardLevel = currentIssues.getHazardRated();
                     if (hazardLevel.equals("Low")) {
                         TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
-                        textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                        String hazardLevelTextMessage = getString(R.string.hazardLevelLow);
+                        textHazardLevel.setText(hazardLevelTextMessage);
                         ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                         imageHazardLevel.setImageResource(R.drawable.greendot);
                     } else if (hazardLevel.equals("Moderate")) {
                         TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
-                        textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                        String hazardLevelTextMessage = getString(R.string.hazardLevelModerate);
+                        textHazardLevel.setText(hazardLevelTextMessage);
                         ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                         imageHazardLevel.setImageResource(R.drawable.yellowdot);
                     } else {
                         TextView textHazardLevel = (TextView) itemView.findViewById(R.id.textHazardLevel);
-                        textHazardLevel.setText("Hazard Level: " + hazardLevel);
+                        String hazardLevelTextMessage = getString(R.string.hazardLevelHigh);
+                        textHazardLevel.setText(hazardLevelTextMessage);
                         ImageView imageHazardLevel = (ImageView) itemView.findViewById(R.id.imageHazardLevel);
                         imageHazardLevel.setImageResource(R.drawable.reddot);
                     }
                     int totalIssues = currentIssues.getNumCritical() + currentIssues.getNumNonCritical();
-                    String info = "# of Issues Found: " + totalIssues;
+                    String info = getString(R.string.numIssuesPreStr) + totalIssues;
                     TextView textIssues = (TextView) itemView.findViewById(R.id.textInfo);
                     textIssues.setText(info);
 
@@ -279,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //POPULATES THE LIST VIEW
-    private void populateListView() {
+    public void populateListView() {
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         SearchView searchView = findViewById(R.id.listSearchBar);
         searchView.setIconifiedByDefault(false);
@@ -374,9 +378,5 @@ public class MainActivity extends AppCompatActivity {
         finishAffinity();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        populateListView();
-    }
+
 }

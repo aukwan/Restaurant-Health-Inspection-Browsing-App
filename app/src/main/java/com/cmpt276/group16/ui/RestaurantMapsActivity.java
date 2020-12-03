@@ -31,6 +31,7 @@ import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Clusters.CustomInfoWindowAdapter;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
+import com.cmpt276.group16.model.RestaurantFavourite;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.model.Clusters.clusterIconRendered;
 import com.cmpt276.group16.model.Clusters.restaurantItem;
@@ -75,6 +76,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private ClusterManager<restaurantItem> clusterManager;
 
+    private RestaurantFavourite restaurantFavourite = new RestaurantFavourite();
     private final RestaurantList restaurantManager = RestaurantList.getInstance();
     private int mPosition;
     private LocationRequest locationRequest;
@@ -146,7 +148,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         mMap.setOnMarkerClickListener(clusterManager);
     }
 
-    private void setTheClusterMarkersItems(){
+    public void setTheClusterMarkersItems(){
         //Setup cluster
         setUpClusterer();
         //mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
@@ -154,12 +156,12 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         //sets the markers for all the locations
         addItem();
     }
-    private void resetClusterItems(){
+    public void resetClusterItems(){
         mMap.clear();
         clusterManager.clearItems();
     }
 
-    private void setFilterForRestaurantMaps(){
+    public void setFilterForRestaurantMaps(){
         SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         SearchView searchView = findViewById(R.id.mapSearchBar);
         searchView.setIconifiedByDefault(false);
@@ -223,6 +225,14 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                 filtered.add(restaurantManager.getRestaurant(k));
         }
         restaurantManager.setFilteredList(filtered);
+        if(prefs.getBoolean("FavouriteSwitch",false)) {
+            filtered=new ArrayList<>();
+            for (int k = 0; k < restaurantManager.getRestArray().size(); k++) {
+                if (restaurantFavourite.determineIfFavourite(RestaurantMapsActivity.this, restaurantManager.getRestaurant(k).getTrackingNumber()))
+                    filtered.add(restaurantManager.getRestaurant(k));
+            }
+            restaurantManager.setFilteredList(filtered);
+        }
     }
 
     private void addItem() {
