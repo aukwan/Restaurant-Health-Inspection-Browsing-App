@@ -48,6 +48,7 @@ public class SearchFilter extends AppCompatDialogFragment {
 
         return dialog;
     }
+    
 
     private void configureRadioButtonsForHazardLevel(View view) {
         RadioButton lowHazard = view.findViewById(R.id.lowHazard);

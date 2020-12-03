@@ -42,16 +42,17 @@ public class MainActivity extends AppCompatActivity {
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
     private String searchText;
-
+    private SearchFilter filter = SearchFilter.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        registerClickCallback();
+
         configureSearchBar();
         populateListView();
+        registerClickCallback();
 
     }
 
@@ -220,21 +221,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FragmentManager manager = getSupportFragmentManager();
-                SearchFilter filter = SearchFilter.getInstance();
                 filter.show(manager, "Filter");
-                filter.onDismiss(new DialogInterface() {
-                    @Override
-                    public void cancel() {
-                        populateListView();
-                    }
 
-                    @Override
-                    public void dismiss() {
-                        populateListView();
-                    }
-                });
             }
         });
+        
+
     }
 
     private void configureSearchBar() {
@@ -328,6 +320,18 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MyListAdapter();
         ListView list = findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateListView();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        populateListView();
     }
 
     @Override
