@@ -98,7 +98,7 @@
     <string name="show_specific_hazard_level">Show Specific Hazard Level :</string>
     <string name="show_or_n_critical_violations_within_the_last_year"><![CDATA[Show <= or >= N Critical Violations Within The Last Year :]]></string>
     <string name="n">N =</string>
-    <string name="show_favourite">Show Favourite :</string>
+    <string name="show_favourite">Show Favourites Only:</string>
     <string name="clear_filters">Clear Filters</string>
     <string name="show_don_t_show">Show/Don\'t Show</string>
     <string name="n_button_text"><![CDATA[<= / >= N]]></string>
