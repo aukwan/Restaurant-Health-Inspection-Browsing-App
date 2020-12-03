@@ -25,6 +25,7 @@ import com.cmpt276.group16.model.Restaurant;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.model.Clusters.clusterIconRendered;
 import com.cmpt276.group16.model.Clusters.restaurantItem;
+import com.cmpt276.group16.ui.popups.favouriteInspectionUpdatePopup;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -194,7 +195,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         Intent intent = getIntent();
         restaurantIndex = intent.getIntExtra("restaurant index", -1);
         Log.e(TAG, "Restaurant Index: " + restaurantIndex);
-
+        Intent intPop = new Intent(this, favouriteInspectionUpdatePopup.class);
+        startActivity(intPop);
 
     }
 

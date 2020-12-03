@@ -60,16 +60,6 @@ public class MainActivity extends AppCompatActivity {
         registerClickCallback();
         populateListView();
 
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        restaurantFavourite.hasNewInspections(MainActivity.this);
-                    }
-                },
-                5000
-        );
-
     }
 
     //POPULATES THE LIST VIEW

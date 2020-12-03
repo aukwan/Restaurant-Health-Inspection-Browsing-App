@@ -48,6 +48,9 @@
             android:name=".ui.popups.inspectionUpdatePopup"
             android:theme="@style/AppTheme.updatePopup" />
         <activity
+            android:name=".ui.popups.favouriteInspectionUpdatePopup"
+            android:theme="@style/AppTheme.updatePopup" />
+        <activity
             android:name=".ui.popups.restaurantUpdatePopup"
             android:theme="@style/AppTheme.updatePopup" />
         <activity

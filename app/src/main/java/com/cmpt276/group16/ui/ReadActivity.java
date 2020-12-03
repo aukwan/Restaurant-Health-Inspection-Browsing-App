@@ -14,7 +14,9 @@ import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.NewDataHarvester;
 import com.cmpt276.group16.model.Restaurant;
+import com.cmpt276.group16.model.RestaurantFavourite;
 import com.cmpt276.group16.model.RestaurantList;
+import com.cmpt276.group16.ui.popups.favouriteInspectionUpdatePopup;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -47,11 +49,13 @@ public class ReadActivity extends AppCompatActivity {
 
         //check for updates
         NewDataHarvester newDataHarvester = new NewDataHarvester();
+        RestaurantFavourite restaurantFavourite = new RestaurantFavourite();
         newDataHarvester.checkForPeriodicDataChangeForRestaurants(this);
         newDataHarvester.checkForPeriodicDataChangeForInspections(this);
-
         readRestaurantData();
         readInspectionData();
+        restaurantFavourite.hasNewInspections(this);
+
 
         Intent intent = new Intent(ReadActivity.this, RestaurantMapsActivity.class);
         startActivity(intent);
