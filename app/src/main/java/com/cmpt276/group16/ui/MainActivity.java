@@ -1,5 +1,6 @@
 package com.cmpt276.group16.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -221,6 +222,17 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager manager = getSupportFragmentManager();
                 SearchFilter filter = SearchFilter.getInstance();
                 filter.show(manager, "Filter");
+                filter.onDismiss(new DialogInterface() {
+                    @Override
+                    public void cancel() {
+                        populateListView();
+                    }
+
+                    @Override
+                    public void dismiss() {
+                        populateListView();
+                    }
+                });
             }
         });
     }
@@ -266,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
 
     //POPULATES THE LIST VIEW
     private void populateListView() {
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
         SearchView searchView = findViewById(R.id.listSearchBar);
         searchView.setIconifiedByDefault(false);
         String search = searchText;
@@ -284,7 +297,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if(restaurantManager.getRestArray().size()!=0) {
             ArrayList<Restaurant> filtered=new ArrayList<>();
-            SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
             int hazard = prefs.getInt("Hazard", 0);
             for(int k=0;k<restaurantManager.getRestArray().size();k++){
                 if (restaurantManager.getRestaurant(k).getIssuesList().size() != 0) {
@@ -309,6 +321,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             restaurantManager.setFilteredList(filtered);
+        }
+        if(prefs.getBoolean("ViolationSwitch",true)){
+
         }
         adapter = new MyListAdapter();
         ListView list = findViewById(R.id.listViewMain);
