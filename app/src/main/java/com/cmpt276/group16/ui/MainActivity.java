@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import com.cmpt276.group16.R;
 import com.cmpt276.group16.model.Issues;
 import com.cmpt276.group16.model.Restaurant;
+import com.cmpt276.group16.model.RestaurantFavourite;
 import com.cmpt276.group16.model.RestaurantList;
 import com.cmpt276.group16.ui.popups.SearchFilter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
+    private RestaurantFavourite restaurantFavourite = new RestaurantFavourite();
     private String searchText;
 
 
@@ -105,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     imageView.setImageResource(R.drawable.dish);
                 }
+
+                if (restaurantFavourite.determineIfFavourite(MainActivity.this, currentRestaurant.getTrackingNumber())){
+                    itemView.setBackgroundResource(R.drawable.restaurant_menu_border);
+                }
+
                 TextView textView = (TextView) itemView.findViewById(R.id.textViewRestaurant);
                 textView.setText(currentRestaurant.getName());
                 if (currentRestaurant.getIssuesList().size() != 0) {
@@ -341,6 +348,14 @@ public class MainActivity extends AppCompatActivity {
                 filtered.add(restaurantManager.getRestaurant(k));
         }
         restaurantManager.setFilteredList(filtered);
+        if(prefs.getBoolean("FavouriteSwitch",false)) {
+            filtered=new ArrayList<>();
+            for (int k = 0; k < restaurantManager.getRestArray().size(); k++) {
+                if (restaurantFavourite.determineIfFavourite(MainActivity.this, restaurantManager.getRestaurant(k).getTrackingNumber()))
+                    filtered.add(restaurantManager.getRestaurant(k));
+            }
+            restaurantManager.setFilteredList(filtered);
+        }
         adapter = new MyListAdapter();
         ListView list = findViewById(R.id.listViewMain);
         list.setAdapter(adapter);

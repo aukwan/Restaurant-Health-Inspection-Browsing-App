@@ -149,7 +149,22 @@ public class SearchFilter extends AppCompatDialogFragment {
 
     private void configureToggleForFavourite(View view) {
         SwitchCompat favouriteSwitch = view.findViewById(R.id.favouriteSwitch);
-        //TODO: Filtering functions
+        favouriteSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                if(isChecked==true){
+                    editor.putBoolean("FavouriteSwitch", true);
+                }
+                else{
+                    editor.putBoolean("FavouriteSwitch", false);
+                }
+                editor.apply();
+            }
+        });
+        SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        favouriteSwitch.setChecked(prefs.getBoolean("FavouriteSwitch",false));
     }
 
     private void configureClearFilters(final View view) {
@@ -168,6 +183,9 @@ public class SearchFilter extends AppCompatDialogFragment {
                 SwitchCompat nCritViolationsSwitch = view.findViewById(R.id.nCritViolationsSwitch);
                 nCritViolationsSwitch.setChecked(true);
                 editor.putBoolean("ViolationSwitch",true);
+                SwitchCompat favouriteSwitch = view.findViewById(R.id.favouriteSwitch);
+                favouriteSwitch.setChecked(false);
+                editor.putBoolean("FavouriteSwitch",false);
                 editor.apply();
             }
         });
