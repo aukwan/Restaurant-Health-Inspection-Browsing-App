@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,12 +40,14 @@ import java.util.Date;
 App entry point, List of all restaurants (Stories.iteration1.1)
 
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private RestaurantList restaurantManager = RestaurantList.getInstance();
     private ArrayAdapter<Restaurant> adapter;
     private String searchText;
-    private SearchFilter filter = SearchFilter.getInstance();
+    private final SearchFilter filter = SearchFilter.getInstance();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,18 +221,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         Button filterBtn = findViewById(R.id.listFilterBtn);
         filterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager manager = getSupportFragmentManager();
                 filter.show(manager, "Filter");
-
             }
         });
-        
+
 
     }
+
+
 
     private void configureSearchBar() {
         SearchView searchView = findViewById(R.id.listSearchBar);

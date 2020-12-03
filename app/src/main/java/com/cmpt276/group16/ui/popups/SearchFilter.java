@@ -3,8 +3,10 @@ package com.cmpt276.group16.ui.popups;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,15 +14,19 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.cmpt276.group16.R;
+import com.cmpt276.group16.ui.MainActivity;
 
 
 public class SearchFilter extends AppCompatDialogFragment {
     private static SearchFilter instance;
+
     public static SearchFilter getInstance() {
         if (instance == null) {
             instance = new SearchFilter();
@@ -45,10 +51,14 @@ public class SearchFilter extends AppCompatDialogFragment {
 
         AlertDialog dialog = alert.create();
         dialog.show();
-
         return dialog;
     }
-    
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        super.onCancel(dialog);
+        Log.i("Search filter", "hi");
+    }
 
     private void configureRadioButtonsForHazardLevel(View view) {
         RadioButton lowHazard = view.findViewById(R.id.lowHazard);
