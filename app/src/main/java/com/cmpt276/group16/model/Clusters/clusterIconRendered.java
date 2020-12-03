@@ -28,6 +28,8 @@ public class clusterIconRendered extends DefaultClusterRenderer<restaurantItem> 
     @Override
     protected void onBeforeClusterItemRendered(restaurantItem item, MarkerOptions markerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions);
+
+
         markerOptions.icon(item.getIcon());
         markerOptions.snippet(item.getSnippet());
         markerOptions.title(item.getTitle());

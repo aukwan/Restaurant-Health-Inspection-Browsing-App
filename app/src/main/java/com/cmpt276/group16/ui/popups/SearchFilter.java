@@ -2,13 +2,16 @@ package com.cmpt276.group16.ui.popups;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
-
+import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.SwitchCompat;
@@ -17,7 +20,6 @@ import com.cmpt276.group16.R;
 
 
 public class SearchFilter extends AppCompatDialogFragment {
-    //TODO: Save filter selections
     private static SearchFilter instance;
     public static SearchFilter getInstance() {
         if (instance == null) {
@@ -46,6 +48,7 @@ public class SearchFilter extends AppCompatDialogFragment {
 
         return dialog;
     }
+    
 
     private void configureRadioButtonsForHazardLevel(View view) {
         RadioButton lowHazard = view.findViewById(R.id.lowHazard);
@@ -54,29 +57,76 @@ public class SearchFilter extends AppCompatDialogFragment {
         lowHazard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Filtering functions
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("Hazard", 1);
+                editor.apply();
             }
         });
 
         moderateHazard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Filtering functions
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("Hazard", 2);
+                editor.apply();
             }
         });
 
         highHazard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Filtering functions
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("Hazard", 3);
+                editor.apply();
             }
         });
+
+        SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        int hazard = prefs.getInt("Hazard", 0);
+        switch (hazard) {
+            case 0:
+                break;
+            case 1:
+                lowHazard.setChecked(true);
+                break;
+            case 2:
+                moderateHazard.setChecked(true);
+                break;
+            case 3:
+                highHazard.setChecked(true);
+                break;
+        }
+
     }
 
     private void configureInputAndToggleForCritViolations(View view) {
         EditText numViolationsInput = view.findViewById(R.id.numCritViolationsLastYear);
         SwitchCompat nCritViolationsSwitch = view.findViewById(R.id.nCritViolationsSwitch);
-        //TODO: Filtering functions
+        SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        nCritViolationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                if(isChecked==true){
+                    editor.putBoolean("ViolationSwitch", true);
+                }
+                else{
+                    editor.putBoolean("ViolationSwitch", false);
+                }
+                editor.apply();
+            }
+        });
+        if(numViolationsInput.getText().toString().equals(""))
+            editor.putInt("Violations",0);
+        else
+            editor.putInt("Violations",Integer.parseInt(numViolationsInput.getText().toString()));
+        editor.apply();
+
     }
 
     private void configureToggleForFavourite(View view) {
@@ -84,8 +134,24 @@ public class SearchFilter extends AppCompatDialogFragment {
         //TODO: Filtering functions
     }
 
-    private void configureClearFilters(View view) {
+    private void configureClearFilters(final View view) {
         Button clearFiltersBtn = view.findViewById(R.id.clearFiltersBtn);
-        //TODO: CLear all filters (optional, can remove if not needed)
+        clearFiltersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences prefs = SearchFilter.this.getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                RadioGroup radioButtons=view.findViewById(R.id.hazardlevelGroup);
+                radioButtons.clearCheck();
+                editor.putInt("Hazard",0);
+                EditText numViolationsInput = view.findViewById(R.id.numCritViolationsLastYear);
+                numViolationsInput.setText("");
+                editor.putInt("Violations",0);
+                SwitchCompat nCritViolationsSwitch = view.findViewById(R.id.nCritViolationsSwitch);
+                nCritViolationsSwitch.setChecked(true);
+                editor.putBoolean("ViolationSwitch",true);
+            }
+        });
+
     }
 }

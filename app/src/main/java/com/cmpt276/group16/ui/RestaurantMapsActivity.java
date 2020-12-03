@@ -53,6 +53,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 
 
 /*
@@ -79,6 +80,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     private clusterIconRendered mRenderer;
     private SearchFilter filter;
 
+    private String searchText;
+
     private boolean toggleCameraFollow = false;
 
 
@@ -94,11 +97,9 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         if (mLocationPermissionGranted) {
-            setUpClusterer();
-            //sets user location:
 
+            //sets user location:
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -127,14 +128,83 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                     }
                 }
             });
-            //mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
-            clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
-            //sets the markers for all the locations
-            addItem();
+            //Sets a filter using share preferences and the search bar
+            setFilterForRestaurantMaps();
+            setTheClusterMarkersItems();
             getDeviceLocation();
         }
     }
 
+    private void setUpClusterer() {
+        clusterManager = new ClusterManager<restaurantItem>(RestaurantMapsActivity.this, mMap);
+        mRenderer = new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager, restaurantIndex);
+        clusterManager.setRenderer(mRenderer);
+        mMap.setOnCameraIdleListener(clusterManager);
+        mMap.setOnMarkerClickListener(clusterManager);
+    }
+
+    private void setTheClusterMarkersItems(){
+        //Setup cluster
+        setUpClusterer();
+        //mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
+        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapter(RestaurantMapsActivity.this));
+        //sets the markers for all the locations
+        addItem();
+    }
+    private void resetClusterItems(){
+        mMap.clear();
+        clusterManager.clearItems();
+    }
+
+    private void setFilterForRestaurantMaps(){
+        SharedPreferences prefs = this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        SearchView searchView = findViewById(R.id.mapSearchBar);
+        searchView.setIconifiedByDefault(false);
+        String search = searchText;
+        if(search.equals("")){
+            restaurantManager.setFilteredList();
+        }
+        else{
+            restaurantManager.setFilteredList();
+            ArrayList<Restaurant> filtered=new ArrayList<>();
+            for(int k=0;k<restaurantManager.getRestArray().size();k++){
+                if(restaurantManager.getRestaurant(k).getName().toLowerCase().contains(search.toLowerCase())){
+                    filtered.add(restaurantManager.getRestaurant(k));
+                }
+            }
+            restaurantManager.setFilteredList(filtered);
+        }
+        if(restaurantManager.getRestArray().size()!=0) {
+            ArrayList<Restaurant> filtered=new ArrayList<>();
+            int hazard = prefs.getInt("Hazard", 0);
+            for(int k=0;k<restaurantManager.getRestArray().size();k++){
+                if (restaurantManager.getRestaurant(k).getIssuesList().size() != 0) {
+                    String currentHazard = restaurantManager.getRestaurant(k).getIssuesList().get(0).getHazardRated();
+                    switch (hazard) {
+                        case 0:
+                            filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                        case 1:
+                            if (currentHazard.equals("Low"))
+                                filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                        case 2:
+                            if (currentHazard.equals("Moderate"))
+                                filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                        case 3:
+                            if (currentHazard.equals("High"))
+                                filtered.add(restaurantManager.getRestaurant(k));
+                            break;
+                    }
+                }
+            }
+            restaurantManager.setFilteredList(filtered);
+        }
+        if(prefs.getBoolean("ViolationSwitch",true)){
+
+        }
+    }
 
     private void addItem() {
         for (int i = 0; i < restaurantManager.getRestArray().size(); i++) {
@@ -186,14 +256,6 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("Restaurant List - Index", restaurantIndex);
         editor.apply();
-    }
-
-    private void setUpClusterer() {
-        clusterManager = new ClusterManager<restaurantItem>(RestaurantMapsActivity.this, mMap);
-        mRenderer = new clusterIconRendered(RestaurantMapsActivity.this, mMap, clusterManager, restaurantIndex);
-        clusterManager.setRenderer(mRenderer);
-        mMap.setOnCameraIdleListener(clusterManager);
-        mMap.setOnMarkerClickListener(clusterManager);
     }
 
 
@@ -375,6 +437,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         }
     }
 
+
     private void configureSearchBar() {
         SearchView searchView = findViewById(R.id.mapSearchBar);
         searchView.setIconifiedByDefault(false);
@@ -385,6 +448,7 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
         } else {
             searchView.setQuery("", true);
         }
+        searchText=search;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -392,20 +456,29 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString("Search", s);
                 editor.apply();
+                searchText=s;
+                setFilterForRestaurantMaps();
+                resetClusterItems();
+                setTheClusterMarkersItems();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if (s.isEmpty()) {
-                    SharedPreferences prefs = RestaurantMapsActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("Search", s);
-                    editor.apply();
-                }
+                SharedPreferences prefs = RestaurantMapsActivity.this.getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("Search", s);
+                editor.apply();
+                searchText=s;
+                setFilterForRestaurantMaps();
+                resetClusterItems();
+                setTheClusterMarkersItems();
                 return true;
             }
         });
+
+
+
     }
 
     // BottomNavigation View and Search Filter buttons
@@ -434,6 +507,8 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
                 FragmentManager manager = getSupportFragmentManager();
                 SearchFilter filter = SearchFilter.getInstance();
                 filter.show(manager, "Filter");
+
+
             }
         });
     }

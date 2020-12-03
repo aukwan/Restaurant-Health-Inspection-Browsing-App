@@ -12,6 +12,7 @@ Restaurant List class with singleton implementation (Stories.iteration1)
 
 public class RestaurantList implements Iterable<Restaurant> {
     private final ArrayList<Restaurant> restaurantsList = new ArrayList<>();
+    private ArrayList<Restaurant> filteredList;
     //singleton
     private static RestaurantList instance;
 
@@ -29,13 +30,31 @@ public class RestaurantList implements Iterable<Restaurant> {
     }
 
     public ArrayList<Restaurant> getRestArray() {
-        ArrayList<Restaurant> restaurantList = new ArrayList<>(restaurantsList);
+        if(filteredList==null)
+            setFilteredList();
+        ArrayList<Restaurant> restaurantList = new ArrayList<>(filteredList);
         return restaurantList;
+    }
+
+    public void setFilteredList(){
+        if(filteredList==null)
+            filteredList=new ArrayList<>(restaurantsList);
+        else
+            filteredList=restaurantsList;
+    }
+
+    public void setFilteredList(ArrayList<Restaurant> list){
+        if(filteredList==null)
+            filteredList=new ArrayList<>(list);
+        else
+            filteredList=list;
     }
 
 
     public Restaurant getRestaurant(int index) {
-        return restaurantsList.get(index);
+        if(filteredList==null)
+            setFilteredList();
+        return filteredList.get(index);
     }
 
     public boolean addIssues(Issues issue) {
