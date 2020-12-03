@@ -53,14 +53,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /*
             Restaurant map activity that displays a Google Map using the Google Map API(Stories.iteration2)
  */
 
-public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class RestaurantMapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private static final String TAG = "MapActivity";
@@ -201,9 +204,25 @@ public class RestaurantMapsActivity extends FragmentActivity implements OnMapRea
             }
             restaurantManager.setFilteredList(filtered);
         }
-        if(prefs.getBoolean("ViolationSwitch",true)){
-
+        ArrayList<Restaurant> filtered=new ArrayList<>();
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        String strDate = df.format(c);
+        int intDate = Integer.parseInt(strDate);
+        for(int k=0;k<restaurantManager.getRestArray().size();k++) {
+            int criticalViolations=0;
+            for(int j=0;j<restaurantManager.getRestaurant(k).getIssuesList().size();j++) {
+                int timeDifference = intDate - restaurantManager.getRestaurant(k).getIssuesList().get(j).getIssueDate();
+                if (timeDifference < 365){
+                    criticalViolations+=restaurantManager.getRestaurant(k).getIssuesList().get(j).getNumCritical();
+                }
+            }
+            if(criticalViolations>=prefs.getInt("Violations",0)&&prefs.getBoolean("ViolationSwitch",true))
+                filtered.add(restaurantManager.getRestaurant(k));
+            else if(criticalViolations<=prefs.getInt("Violations",0)&&!prefs.getBoolean("ViolationSwitch",true))
+                filtered.add(restaurantManager.getRestaurant(k));
         }
+        restaurantManager.setFilteredList(filtered);
     }
 
     private void addItem() {
