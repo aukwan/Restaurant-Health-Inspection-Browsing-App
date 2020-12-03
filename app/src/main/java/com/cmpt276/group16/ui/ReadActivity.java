@@ -68,15 +68,11 @@ public class ReadActivity extends AppCompatActivity {
     }
 
     // Function to remove the element
-    public static String[] removeTheElement(String[] arr,
-                                            int index) {
+    public static String[] removeTheElement(String[] arr, int index) {
         // If the array is empty
         // or the index is not in array range
         // return the original array
-        if (arr == null
-                || index < 0
-                || index >= arr.length) {
-
+        if (arr == null || index < 0 || index >= arr.length) {
             return arr;
         }
 
@@ -105,13 +101,6 @@ public class ReadActivity extends AppCompatActivity {
     //==============
     //==============
 
-
-    private void checkForNewData() {
-        final NewDataHarvester newDataHarvester = new NewDataHarvester();
-        newDataHarvester.restaurantGetRequest();
-        Log.i("resultsOfJSON", newDataHarvester.getLastModified());
-
-    }
 
     //READ CSV FILE
     private void readRestaurantData() {
